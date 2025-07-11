@@ -1,4 +1,25 @@
 [versions]
+# androidx
+gson = "2.10.1"
+room = "2.5.2"
+data-store = "1.0.0"
+animation = "1.6.7"
+gradle = "8.7.3"
+
+
+# Network
+network_retrofit = "2.11.0"
+network_okhttp = "4.12.0"
+network_chucker = "4.0.0"
+
+# stack
+ksp = "2.0.21-1.0.27"
+coil = "2.6.0"
+moshi = "1.13.0"
+coroutines = "1.6.4"
+hilt = "2.48"
+runtimeAndroid = "1.6.7"
+jsoup = "1.17.2"
 agp = "8.9.0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
@@ -8,25 +29,115 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
+navigation = "2.7.7"
+hiltNavigation = "1.2.0"
+lifecycleCompose = "2.8.2"
+accompanist = "0.28.0"
+jwt = "2.0.2"
+serialization-json = "1.7.3"
+
 
 [libraries]
+# Core Android
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+
+# Gradle
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hilt" }
+
+# Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+
+# Lifecycle
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleCompose" }
+
+# Compose
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime" }
+androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
+
+# Compose UI
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-util = { group = "androidx.compose.ui", name = "ui-util" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+# Compose Material
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material3-window = { group = "androidx.compose.material3", name = "material3-window-size-class", version = "1.2.0" }
+androidx-compose-material-iconsExtended = { group = "androidx.compose.material", name = "material-icons-extended", version = "1.5.4" }
+androidx-compose-material-core = { group = "androidx.compose.material", name = "material", version = "1.7.0" }
+
+# Navigation
+androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigation" }
+androidx-navigation-dynamic = { module = "androidx.navigation:navigation-dynamic-features-fragment", version.ref = "navigation" }
+
+# Hilt
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
+stack-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+stack-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+
+# Room
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+
+# Data Store
+androidx-data-store = { module = "androidx.datastore:datastore-preferences", version.ref = "data-store" }
+
+# Network
+network-retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "network_retrofit" }
+network-kotlinx-json-converter = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "network_retrofit" }
+network-okhttp-bom = { group = "com.squareup.okhttp3", name = "okhttp-bom", version.ref = "network_okhttp" }
+network-okhttp = { group = "com.squareup.okhttp3", name = "okhttp" }
+network-okhttp-logging = { group = "com.squareup.okhttp3", name = "logging-interceptor" }
+network-chucker-library = { group = "com.github.chuckerteam.chucker", name = "library", version.ref = "network_chucker" }
+network-chucker-library-noop = { group = "com.github.chuckerteam.chucker", name = "library-no-op", version.ref = "network_chucker" }
+
+# Image Loading
+coil-kt-svg = { group = "io.coil-kt", name = "coil-svg", version.ref = "coil" }
+coil-kt-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+
+# Utilities
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+stack-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+stack-jwt = { module = "com.auth0.android:jwtdecode", version.ref = "jwt" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+# Coroutines
+stack-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
+
+# Kotlin
+stack-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization-json" }
+
+# Accompanist
+stack-accompanist-systemui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+
+# Runtime
+androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
+
+# FlowRow (missing dependency)
+androidx-flowrow = { module = "com.google.accompanist:accompanist-flowlayout", version = "0.32.0" }
+
+
+[bundles]
+network = ["network-retrofit", "network-kotlinx-json-converter", "network-okhttp", "network-okhttp-logging", "kotlinx-serialization-json"]
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+stack-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+stack-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+stack-hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 
