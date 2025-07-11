@@ -3,4 +3,8 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.compose) apply false
+
+    alias(libs.plugins.stack.kotlin.parcelize) apply false
+    alias(libs.plugins.stack.hilt.plugin) apply false
+    alias(libs.plugins.stack.ksp) apply false
 }
