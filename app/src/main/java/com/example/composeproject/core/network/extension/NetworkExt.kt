@@ -43,30 +43,20 @@ fun <T> parseError(response: Response<T>): RestResult.Error {
     return RestResult.Error(error)
 }
 
-inline val <reified T : BaseResponse> Response<T>.asRestResult: RestResult<T>
+inline val <reified T > Response<T>.asRestResult: RestResult<T>
     get() {
         try {
             if (isSuccessful.not()) {
                 return parseError(this)
             } else {
                 val body = body() ?: return createErrorResult(this)
-
-                return when (body.status?.code) {
-                    StatusType.SUCCESS.value -> RestResult.Success(body)
-                    else ->
-                        RestResult.Error(
-                            Error().apply {
-                                message = body.status?.message
-                                code = body.status?.code
-                            }
-                        )
-                }
+                return RestResult.Success(body)
             }
         } catch (e: Exception) {
             return RestResult.Error(
                 Error().apply {
-                    message = body()?.status?.message
-                    code = body()?.status?.code
+                    message = e.message
+                    code = NetworkErrorType.REQUEST_FAILED.value
                 }
             )
         }
@@ -85,7 +75,7 @@ fun RequestBody?.bodyToString(): String {
 }
 
 
-fun <T : BaseResponse> createErrorResult(response: Response<T>): RestResult.Error {
+fun <T > createErrorResult(response: Response<T>): RestResult.Error {
     return RestResult.Error(
         Error.from(NetworkErrorType.OTHER).apply {
             message = response.message()

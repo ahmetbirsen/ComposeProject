@@ -6,7 +6,6 @@ data-store = "1.0.0"
 animation = "1.6.7"
 gradle = "8.7.3"
 
-
 # Network
 network_retrofit = "2.11.0"
 network_okhttp = "4.12.0"
@@ -29,13 +28,12 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
 composeBom = "2024.09.00"
-navigation = "2.7.7"
+navigation = "2.9.1"
 hiltNavigation = "1.2.0"
 lifecycleCompose = "2.8.2"
 accompanist = "0.28.0"
 jwt = "2.0.2"
 serialization-json = "1.7.3"
-
 
 [libraries]
 # Core Android
@@ -83,7 +81,7 @@ androidx-navigation-dynamic = { module = "androidx.navigation:navigation-dynamic
 # Hilt
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigation" }
 stack-hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
-stack-hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+stack-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 
 # Room
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
@@ -128,7 +126,6 @@ androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime
 # FlowRow (missing dependency)
 androidx-flowrow = { module = "com.google.accompanist:accompanist-flowlayout", version = "0.32.0" }
 
-
 [bundles]
 network = ["network-retrofit", "network-kotlinx-json-converter", "network-okhttp", "network-okhttp-logging", "kotlinx-serialization-json"]
 
@@ -136,8 +133,7 @@ network = ["network-retrofit", "network-kotlinx-json-converter", "network-okhttp
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 stack-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 stack-kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
 stack-hilt-plugin = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.stack.kotlin.parcelize)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.stack.hilt.plugin)
     alias(libs.plugins.stack.ksp)
 }
@@ -22,6 +23,16 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            // Release signing için gerçek keystore bilgilerinizi buraya ekleyin
+            // storeFile = file("release.keystore")
+            // storePassword = "your_store_password"
+            // keyAlias = "your_key_alias"
+            // keyPassword = "your_key_password"
+        }
+    }
+
     buildFeatures {
         compose = true
         buildConfig = true
@@ -30,23 +41,25 @@ android {
 
     buildTypes {
         release {
-            applicationIdSuffix = ""
+        applicationIdSuffix = ""
+        signingConfig = signingConfigs.getByName("release")
 
-            buildConfigField("String", "ENVIRONMENT_VARIABLE", config("PROD_ENVIRONMENT"))
-            buildConfigField("String", "BASE_URL", config("prod_url"))
+        buildConfigField("String", "ENVIRONMENT_VARIABLE", config("PROD_ENVIRONMENT"))
+        buildConfigField("String", "BASE_URL", config("prod_url"))
 
-            isDebuggable = false
-            isMinifyEnabled = true
-            isShrinkResources = true
+        isDebuggable = false
+        isMinifyEnabled = true
+        isShrinkResources = true
 
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
+        proguardFiles(
+            getDefaultProguardFile("proguard-android-optimize.txt"),
+            "proguard-rules.pro"
+        )
+    }
 
         create("dev") {
             applicationIdSuffix = ".dev"
+            signingConfig = signingConfigs.getByName("debug") // Mevcut debug signing config'i kullan
 
             isDebuggable = true
             isMinifyEnabled = false
@@ -126,16 +139,21 @@ dependencies {
     
     // Data Store
     implementation(libs.androidx.data.store)
-    
+
     // Network
-    implementation(libs.bundles.network)
+    implementation(platform(libs.network.okhttp.bom))
+    implementation(libs.network.retrofit)
+    implementation(libs.network.kotlinx.json.converter)
+    implementation(libs.network.okhttp)
+    implementation(libs.network.okhttp.logging)
+    implementation(libs.kotlinx.serialization.json)
 
     /*
     Chucker implementasyonu için flavors kullanılacak
      */
     //implementation(libs.network.chucker.library)
-    debugImplementation(libs.network.chucker.library)
-    releaseImplementation(libs.network.chucker.library.noop)
+//    debugImplementation(libs.network.chucker.library)
+//    releaseImplementation(libs.network.chucker.library.noop)
 
     // Image Loading
     implementation(libs.coil.kt.svg)

@@ -15,7 +15,7 @@ internal object HomeServiceModule {
     @Provides
     fun provideHomeService(retrofit: Retrofit): HomeService = retrofit
         .newBuilder()
-        .baseUrl(BuildConfig.VERSION_NAME)
+        .baseUrl(BuildConfig.BASE_URL)
         .build()
         .create(HomeService::class.java)
 }
