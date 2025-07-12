@@ -11,7 +11,7 @@ import retrofit2.Response
 
 open class BaseRepository {
 
-    suspend inline fun <reified T : BaseResponse> request(
+    suspend inline fun <reified T> request(
         crossinline call: suspend () -> Response<T>
     ): RestResult<T> = withContext(Dispatchers.IO) {
         try {

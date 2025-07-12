@@ -3,7 +3,6 @@
 package com.example.composeproject.core.network.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.example.composeproject.core.network.NoConnectionInterceptor
 import com.example.composeproject.core.network.TimeoutType
 import com.example.composeproject.core.qualifiers.BaseUrl
@@ -43,13 +42,14 @@ internal object RetrofitModule {
         return NoConnectionInterceptor(context)
     }
 
-    @Provides
-    @Interceptors
-    @IntoMap
-    @InterceptorMapKey(InterceptorTypes.Chucker)
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): Interceptor {
-        return ChuckerInterceptor.Builder(context).maxContentLength(2_500_000L).build()
-    }
+//    @Provides
+//    @Interceptors
+//    @IntoMap
+//    @InterceptorMapKey(InterceptorTypes.Chucker)
+//    fun provideChuckerInterceptor(@ApplicationContext context: Context): Interceptor {
+//        return ChuckerInterceptor.Builder(context)
+//            .build()
+//    }
 
     @Provides
     @Interceptors

@@ -9,5 +9,4 @@ enum class NetworkErrorType(val value: Int) {
     REQUEST_FAILED(-1),
     OTHER(-2),
     NO_INTERNET_CONNECTION(-1000),
-    SECURITY_ERROR(1225)
 }
