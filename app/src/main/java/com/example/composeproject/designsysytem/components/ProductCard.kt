@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +21,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -90,26 +90,23 @@ fun ProductCard(
                         )
                 )
 
-                Box(
+                // Eski + kutusu kaldırıldı, yerine CounterComponent geldi
+                CounterComponent(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
-                        .size(40.dp)
-                        .offset(x = 12.dp, y = (-12).dp) // Sağa ve yukarıya taşı
-                        .shadow(8.dp, RoundedCornerShape(12.dp), clip = false)
-                        .background(Color.White, RoundedCornerShape(12.dp))
-                        .clickable {
-                            count++
-                            onAdd()
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Add",
-                        tint = BrandColor,
-                        modifier = Modifier.size(28.dp)
-                    )
-                }
+                        .offset(x = 12.dp, y = (-12).dp),
+                    count = count,
+                    onAdd = {
+                        count++
+                        onAdd()
+                    },
+                    onRemove = {
+                        if (count > 0) {
+                            count--
+                            onRemove()
+                        }
+                    }
+                )
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
@@ -131,74 +128,34 @@ fun ProductCard(
                 maxLines = 1,
                 modifier = Modifier.padding(top = 2.dp)
             )
-            // Animasyonlu adet ve sil/azaltma alanı
-            AnimatedVisibility(
-                visible = count > 0,
-                enter = expandVertically(animationSpec = tween(300)),
-                exit = shrinkVertically(animationSpec = tween(300))
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    if (count == 1) {
-                        Icon(
-                            imageVector = Icons.Filled.Delete,
-                            contentDescription = "Delete",
-                            tint = BrandColor,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    count = 0
-                                    onRemove()
-                                }
-                        )
-                    } else if (count > 1) {
-                        Icon(
-                            imageVector = Icons.Filled.Remove,
-                            contentDescription = "Remove",
-                            tint = BrandColor,
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable {
-                                    count--
-                                    onRemove()
-                                }
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = count.toString(),
-                        color = BrandColor,
-                        style = PriceText
-                    )
-                }
-            }
         }
     }
 }
 
+// CounterComponent fonksiyonunu parametreli ve animasyonlu şekilde güncelle
 @Composable
-fun CounterComponent() {
+fun CounterComponent(
+    modifier: Modifier = Modifier,
+    count: Int,
+    onAdd: () -> Unit,
+    onRemove: () -> Unit
+) {
     Box(
-        modifier = Modifier
-            //.align(Alignment.TopEnd)
-            //.size(40.dp)
-            //.offset(x = 12.dp, y = (-12).dp) // Sağa ve yukarıya taşı
+        modifier = modifier
             .shadow(8.dp, RoundedCornerShape(12.dp), clip = false)
-            .background(Color.White, RoundedCornerShape(12.dp))
-            .clickable {
-//                count++
-//                onAdd()
-            },
+            .background(Color.White, RoundedCornerShape(12.dp)),
         contentAlignment = Alignment.Center
     ) {
         Column {
             Box(
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
+                        onAdd()
+                    }
             ) {
                 Icon(
                     modifier = Modifier.align(Alignment.Center),
@@ -207,37 +164,53 @@ fun CounterComponent() {
                     tint = BrandColor,
                 )
             }
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .background(color = BrandColor)
+
+            // Eğer ürün eklenmişse, adet ve sil/azalt animasyonlu olarak görünür
+            AnimatedVisibility(
+                visible = count > 0,
+                enter = expandVertically(animationSpec = tween(300)),
+                exit = shrinkVertically(animationSpec = tween(300))
             ) {
-                Text(
+                Column(
                     modifier = Modifier
-                        .align(Alignment.Center)
-                    ,
-                    text = "1",
-                    color = White,
-                    style = CounterText
-                )
-            }
-            Box(
-                modifier = Modifier.size(32.dp)
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .clickable {
-//                            count = 0
-//                            onRemove()
-                        },
-                    painter = painterResource(R.drawable.ic_remove),
-                    contentDescription = "Delete",
-                    tint = BrandColor,
-                )
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                ) {
+                    // Adet kutusu
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .background(color = BrandColor),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = count.toString(),
+                            color = White,
+                            style = CounterText
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                onRemove()
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            painter = painterResource(
+                                id = if (count == 1) R.drawable.ic_remove else R.drawable.ic_minus
+                            ),
+                            contentDescription = if (count == 1) "Delete" else "Minus",
+                            tint = BrandColor,
+                        )
+                    }
+                }
             }
         }
-
     }
 }
 
@@ -246,7 +219,11 @@ fun CounterComponent() {
 @Composable
 private fun ProductCardPreview() {
     Column {
-        CounterComponent()
+        CounterComponent(
+            count = 1,
+            onAdd = {},
+            onRemove = {}
+        )
 //        ProductCard(
 //            name = "Ürün Adı",
 //            attribute = "Ürün Özellikleri",
