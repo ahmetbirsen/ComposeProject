@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.composeproject.navigation.NavigationRoot
-import com.example.composeproject.ui.theme.ComposeProjectTheme
+import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

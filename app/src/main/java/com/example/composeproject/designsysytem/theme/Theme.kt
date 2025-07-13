@@ -1,4 +1,4 @@
-package com.example.composeproject.ui.theme
+package com.example.composeproject.designsysytem.theme
 
 import android.app.Activity
 import android.os.Build
