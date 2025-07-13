@@ -8,6 +8,7 @@ import com.example.composeproject.core.qualifiers.Dispatchers
 import com.example.composeproject.feature.home.data.mapper.HomeMappers
 import com.example.composeproject.feature.home.data.service.HomeService
 import com.example.composeproject.feature.home.domain.HomeRepository
+import com.example.composeproject.feature.home.domain.model.HomeSuggestedProductsUiModel
 import com.example.composeproject.feature.home.domain.model.HomeVerticalProductsUiModel
 import dagger.Lazy
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,9 +25,18 @@ class HomeRepositoryImpl @Inject constructor(
             request {
                 homeService.get().getProducts()
             }.mapOnSuccess { responseList ->
-                // İlk elemanı al veya boş liste döndür
                 val firstResponse = responseList?.firstOrNull()
                 homeMappers.homeVerticalProductsMapper.map(firstResponse)
+            }
+        }
+
+    override suspend fun getSuggestedProducts(): RestResult<HomeSuggestedProductsUiModel> =
+        withContext(ioDispatchers) {
+            request {
+                homeService.get().getSuggestedProducts()
+            }.mapOnSuccess { responseList ->
+                val firstResponse = responseList?.firstOrNull()
+                homeMappers.homeSuggestedProductsMapper.map(firstResponse)
             }
         }
 }
