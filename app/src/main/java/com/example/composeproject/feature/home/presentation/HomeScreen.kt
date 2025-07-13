@@ -1,5 +1,6 @@
 package com.example.composeproject.feature.home.presentation
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -39,10 +40,16 @@ fun HomeScreenRoute(
 private fun HomeScreen(
     state: HomeState,
 ) {
-    Text("Hello")
-    if (state.verticalProducts.isNotEmpty()) {
-        Text(state.verticalProducts.first().priceText)
+    Column {
+        Text("Hello")
+        if (state.verticalProducts.isNotEmpty()) {
+            Text(state.verticalProducts.first().name)
+        }
+        if (state.suggestedProducts.isNotEmpty()) {
+            Text(state.suggestedProducts.first().name)
+        }
     }
+
 }
 
 @Preview

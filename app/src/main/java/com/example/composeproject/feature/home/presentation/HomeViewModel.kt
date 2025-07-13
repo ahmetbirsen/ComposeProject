@@ -1,12 +1,9 @@
 package com.example.composeproject.feature.home.presentation
 
-import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
-import com.example.composeproject.feature.home.domain.usecase.GetVerticalProductsUseCase
 import com.example.composeproject.feature.home.domain.usecase.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -31,15 +28,12 @@ class HomeViewModel @Inject constructor(
     val uiState = _uiState.onStart {
         //start()
         getVerticalProducts()
+        getSuggestedProducts()
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Lazily,
         initialValue = _uiState.value
     )
-
-    init {
-        getVerticalProducts()
-    }
 
     fun getVerticalProducts() {
         safeFlowApiCall {
@@ -48,6 +42,20 @@ class HomeViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(
                     verticalProducts = response.products
+                )
+            }
+        }.onError {
+
+        }.launchIn(viewModelScope)
+    }
+
+    fun getSuggestedProducts() {
+        safeFlowApiCall {
+            homeUseCases.getSuggestedProducts()
+        }.onSuccess { response ->
+            _uiState.update { state ->
+                state.copy(
+                    suggestedProducts = response.suggestedProducts
                 )
             }
         }.onError {
