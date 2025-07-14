@@ -67,6 +67,11 @@ class HomeViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    fun refreshData() {
+        getVerticalProducts()
+        getSuggestedProducts()
+    }
+
     private fun saveSuggestedProductsToDatabase(suggestedProducts: List<com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel>) {
         homeUseCases.saveSuggestedProductsToDatabase(suggestedProducts)
             .launchIn(viewModelScope)
