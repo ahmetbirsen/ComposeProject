@@ -44,6 +44,8 @@ class HomeViewModel @Inject constructor(
                     verticalProducts = response.products
                 )
             }
+            // Save vertical products to database
+            saveVerticalProductsToDatabase(response.products)
         }.onError {
 
         }.launchIn(viewModelScope)
@@ -58,9 +60,20 @@ class HomeViewModel @Inject constructor(
                     suggestedProducts = response.suggestedProducts
                 )
             }
+            // Save suggested products to database
+            saveSuggestedProductsToDatabase(response.suggestedProducts)
         }.onError {
 
         }.launchIn(viewModelScope)
     }
 
+    private fun saveSuggestedProductsToDatabase(suggestedProducts: List<com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel>) {
+        homeUseCases.saveSuggestedProductsToDatabase(suggestedProducts)
+            .launchIn(viewModelScope)
+    }
+
+    private fun saveVerticalProductsToDatabase(verticalProducts: List<com.example.composeproject.feature.home.domain.model.VerticalProductsUiModel>) {
+        homeUseCases.saveVerticalProductsToDatabase(verticalProducts)
+            .launchIn(viewModelScope)
+    }
 }

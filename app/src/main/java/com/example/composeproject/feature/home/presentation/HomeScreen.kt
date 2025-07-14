@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -64,7 +63,6 @@ private fun HomeScreen(
     Column(modifier = Modifier.fillMaxSize()) {
         HomeTopBar(basketTotal = basketTotal)
         Spacer(modifier = Modifier.height(8.dp))
-        // Horizontal Suggested Products
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,7 +86,6 @@ private fun HomeScreen(
                 .fillMaxWidth()
                 .height(16.dp)
         )
-        // Vertical Products
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             modifier = Modifier
