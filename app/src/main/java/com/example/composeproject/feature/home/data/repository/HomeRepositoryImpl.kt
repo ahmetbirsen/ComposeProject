@@ -5,6 +5,7 @@ import com.example.composeproject.core.model.RestResult
 import com.example.composeproject.core.model.mapOnSuccess
 import com.example.composeproject.core.model.onError
 import com.example.composeproject.core.qualifiers.Dispatchers
+import com.example.composeproject.feature.basket.data.db.BasketDao
 import com.example.composeproject.feature.home.data.db.suggestedproducts.SuggestedProductsDao
 import com.example.composeproject.feature.home.data.db.verticalproducts.VerticalProductsDao
 import com.example.composeproject.feature.home.data.mapper.HomeMappers
@@ -26,7 +27,7 @@ class HomeRepositoryImpl @Inject constructor(
     private val homeService: Lazy<HomeService>,
     private val homeMappers: HomeMappers,
     private val suggestedProductsDao: SuggestedProductsDao,
-    private val verticalProductsDao: VerticalProductsDao
+    private val verticalProductsDao: VerticalProductsDao,
 ) : BaseRepository(), HomeRepository {
     override suspend fun getVerticalProducts(): RestResult<HomeVerticalProductsUiModel> =
         withContext(ioDispatchers) {

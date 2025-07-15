@@ -67,8 +67,8 @@ fun CounterComponent(
 
             AnimatedVisibility(
                 visible = count > 0,
-                enter = expandVertically(animationSpec = tween(300)),
-                exit = shrinkVertically(animationSpec = tween(300))
+                enter = expandVertically(animationSpec = tween(300)) + fadeIn(animationSpec = tween(300)),
+                exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(300))
             ) {
                 Column(
                     modifier = Modifier

@@ -50,14 +50,17 @@ fun HomeScreenRoute(
     val state = viewModel.uiState.collectAsState()
     val isLoading by viewModel.networkLoadingStateFlow.collectAsState()
     val isLoadingBoolean = isLoading.isLoading
-    var basketTotal by remember { mutableDoubleStateOf(0.0) }
     Surface(color = Gray) {
         HomeScreen(
             state = state.value,
-            basketTotal = basketTotal,
-            onBasketTotalChange = { basketTotal = it },
             isLoading = isLoadingBoolean,
-            onRefresh = { viewModel.refreshData() }
+            onRefresh = { viewModel.refreshData() },
+            onAddToBasket = { productId, name, imageURL, price, priceText ->
+                viewModel.addToBasket(productId, name, imageURL, price, priceText)
+            },
+            onRemoveFromBasket = { productId ->
+                viewModel.removeFromBasket(productId)
+            }
         )
     }
 }
@@ -66,23 +69,27 @@ fun HomeScreenRoute(
 @Composable
 private fun HomeScreen(
     state: HomeState,
-    basketTotal: Double,
-    onBasketTotalChange: (Double) -> Unit,
     isLoading: Boolean = false,
-    onRefresh: () -> Unit = {}
+    onRefresh: () -> Unit = {},
+    onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },
+    onRemoveFromBasket: (String) -> Unit = { _ -> }
 ) {
+    // Helper function to get quantity for a product
+    fun getProductQuantity(productId: String): Int {
+        return state.basketItems.find { it.id == productId }?.quantity ?: 0
+    }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
         onRefresh = onRefresh
     )
 
-    Box(){
+    Box{
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .pullRefresh(pullRefreshState)
         ) {
-            HomeTopBar(basketTotal = basketTotal)
+            HomeTopBar(basketTotal = state.basketTotal)
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
                 modifier = Modifier
@@ -91,16 +98,17 @@ private fun HomeScreen(
                     .padding(vertical = 16.dp, horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(state.suggestedProducts, key = { it.id }) { product ->
-                    ProductCard(
-                        name = product.name,
-                        attribute = product.shortDescription,
-                        priceText = product.priceText,
-                        imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                        onAdd = { onBasketTotalChange(basketTotal + product.price) },
-                        onRemove = { onBasketTotalChange((basketTotal - product.price).coerceAtLeast(0.0)) }
-                    )
-                }
+                            items(state.suggestedProducts, key = { it.id }) { product ->
+                ProductCard(
+                    name = product.name,
+                    attribute = product.shortDescription,
+                    priceText = product.priceText,
+                    imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                    quantity = getProductQuantity(product.id),
+                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onRemove = { onRemoveFromBasket(product.id) }
+                )
+            }
             }
             Spacer(
                 modifier = Modifier
@@ -116,16 +124,17 @@ private fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(7.dp)
             ) {
-                items(state.verticalProducts, key = { it.id }) { product ->
-                    ProductCard(
-                        name = product.name,
-                        attribute = product.attribute,
-                        priceText = product.priceText,
-                        imageUrl = product.imageURL,
-                        onAdd = { onBasketTotalChange(basketTotal + product.price) },
-                        onRemove = { onBasketTotalChange((basketTotal - product.price).coerceAtLeast(0.0)) }
-                    )
-                }
+                            items(state.verticalProducts, key = { it.id }) { product ->
+                ProductCard(
+                    name = product.name,
+                    attribute = product.attribute,
+                    priceText = product.priceText,
+                    imageUrl = product.imageURL,
+                    quantity = getProductQuantity(product.id),
+                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onRemove = { onRemoveFromBasket(product.id) }
+                )
+            }
             }
         }
 
@@ -174,9 +183,7 @@ private fun HomeTopBar(basketTotal: Double) {
 private fun HomeScreenPreview() {
     ComposeProjectTheme {
         HomeScreen(
-            state = HomeState(),
-            basketTotal = 0.0,
-            onBasketTotalChange = {}
+            state = HomeState()
         )
     }
 }
