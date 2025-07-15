@@ -2,6 +2,7 @@ package com.example.composeproject.feature.home.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,12 +11,15 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,71 +48,101 @@ fun HomeScreenRoute(
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsState()
-    // Sepet state'i örnek olarak burada tutuluyor
-    var basketTotal by remember { mutableDoubleStateOf(0.0) }
+    val isLoading by viewModel.networkLoadingStateFlow.collectAsState()
+    val isLoadingBoolean = isLoading.isLoading
     Surface(color = Gray) {
         HomeScreen(
             state = state.value,
-            basketTotal = basketTotal,
-            onBasketTotalChange = { basketTotal = it }
+            isLoading = isLoadingBoolean,
+            onRefresh = { viewModel.refreshData() },
+            onAddToBasket = { productId, name, imageURL, price, priceText ->
+                viewModel.addToBasket(productId, name, imageURL, price, priceText)
+            },
+            onRemoveFromBasket = { productId ->
+                viewModel.removeFromBasket(productId)
+            }
         )
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun HomeScreen(
     state: HomeState,
-    basketTotal: Double,
-    onBasketTotalChange: (Double) -> Unit
+    isLoading: Boolean = false,
+    onRefresh: () -> Unit = {},
+    onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },
+    onRemoveFromBasket: (String) -> Unit = { _ -> }
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        HomeTopBar(basketTotal = basketTotal)
-        Spacer(modifier = Modifier.height(8.dp))
-        // Horizontal Suggested Products
-        LazyRow(
+    // Helper function to get quantity for a product
+    fun getProductQuantity(productId: String): Int {
+        return state.basketItems.find { it.id == productId }?.quantity ?: 0
+    }
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isLoading,
+        onRefresh = onRefresh
+    )
+
+    Box{
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(color = White)
-                .padding(vertical = 16.dp, horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                .fillMaxSize()
+                .pullRefresh(pullRefreshState)
         ) {
-            items(state.suggestedProducts, key = { it.id }) { product ->
+            HomeTopBar(basketTotal = state.basketTotal)
+            Spacer(modifier = Modifier.height(8.dp))
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = White)
+                    .padding(vertical = 16.dp, horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                            items(state.suggestedProducts, key = { it.id }) { product ->
                 ProductCard(
                     name = product.name,
                     attribute = product.shortDescription,
                     priceText = product.priceText,
                     imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                    onAdd = { onBasketTotalChange(basketTotal + product.price) },
-                    onRemove = { onBasketTotalChange((basketTotal - product.price).coerceAtLeast(0.0)) }
+                    quantity = getProductQuantity(product.id),
+                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onRemove = { onRemoveFromBasket(product.id) }
                 )
             }
-        }
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp)
-        )
-        // Vertical Products
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = White)
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(7.dp)
-        ) {
-            items(state.verticalProducts, key = { it.id }) { product ->
+            }
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(16.dp)
+            )
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(3),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(color = White)
+                    .padding(horizontal = 8.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(7.dp)
+            ) {
+                            items(state.verticalProducts, key = { it.id }) { product ->
                 ProductCard(
                     name = product.name,
                     attribute = product.attribute,
                     priceText = product.priceText,
                     imageUrl = product.imageURL,
-                    onAdd = { onBasketTotalChange(basketTotal + product.price) },
-                    onRemove = { onBasketTotalChange((basketTotal - product.price).coerceAtLeast(0.0)) }
+                    quantity = getProductQuantity(product.id),
+                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onRemove = { onRemoveFromBasket(product.id) }
                 )
             }
+            }
         }
+
+        PullRefreshIndicator(
+            refreshing = isLoading,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 
@@ -149,9 +183,7 @@ private fun HomeTopBar(basketTotal: Double) {
 private fun HomeScreenPreview() {
     ComposeProjectTheme {
         HomeScreen(
-            state = HomeState(),
-            basketTotal = 0.0,
-            onBasketTotalChange = {}
+            state = HomeState()
         )
     }
 }

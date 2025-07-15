@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
+import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
 import com.example.composeproject.feature.home.domain.usecase.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -13,12 +14,15 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeUseCases: HomeUseCases
+    private val homeUseCases: HomeUseCases,
+    private val basketUseCases: BasketUseCases
     ) : CoreViewModel() {
 
     private val eventChannel = Channel<HomeEvent>()
@@ -35,6 +39,12 @@ class HomeViewModel @Inject constructor(
         initialValue = _uiState.value
     )
 
+    init {
+        // Başlangıçta basket verilerini yükle
+        observeBasketItems()
+        observeBasketTotal()
+    }
+
     fun getVerticalProducts() {
         safeFlowApiCall {
             homeUseCases.getVerticalProducts()
@@ -44,6 +54,8 @@ class HomeViewModel @Inject constructor(
                     verticalProducts = response.products
                 )
             }
+            // Save vertical products to database
+            saveVerticalProductsToDatabase(response.products)
         }.onError {
 
         }.launchIn(viewModelScope)
@@ -58,9 +70,84 @@ class HomeViewModel @Inject constructor(
                     suggestedProducts = response.suggestedProducts
                 )
             }
+            // Save suggested products to database
+            saveSuggestedProductsToDatabase(response.suggestedProducts)
         }.onError {
 
         }.launchIn(viewModelScope)
     }
 
+    fun refreshData() {
+        getVerticalProducts()
+        getSuggestedProducts()
+    }
+
+    fun addToBasket(productId: String, name: String, imageURL: String, price: Double, priceText: String) {
+        basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
+            .onEach {
+                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
+                refreshBasketData()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    fun removeFromBasket(productId: String) {
+        basketUseCases.removeFromBasket(productId)
+            .onEach {
+                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
+                refreshBasketData()
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun refreshBasketData() {
+        // Basket verilerini yeniden yükle
+        basketUseCases.getBasketItems()
+            .onEach { basketItems ->
+                _uiState.update { state ->
+                    state.copy(basketItems = basketItems)
+                }
+            }
+            .launchIn(viewModelScope)
+        
+        basketUseCases.getBasketTotal()
+            .onEach { total ->
+                _uiState.update { state ->
+                    state.copy(basketTotal = total)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeBasketItems() {
+        basketUseCases.getBasketItems()
+            .onEach { basketItems ->
+                _uiState.update { state ->
+                    state.copy(basketItems = basketItems)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    private fun observeBasketTotal() {
+        basketUseCases.getBasketTotal()
+            .onEach { total ->
+                _uiState.update { state ->
+                    state.copy(basketTotal = total)
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+
+
+    private fun saveSuggestedProductsToDatabase(suggestedProducts: List<com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel>) {
+        homeUseCases.saveSuggestedProductsToDatabase(suggestedProducts)
+            .launchIn(viewModelScope)
+    }
+
+    private fun saveVerticalProductsToDatabase(verticalProducts: List<com.example.composeproject.feature.home.domain.model.VerticalProductsUiModel>) {
+        homeUseCases.saveVerticalProductsToDatabase(verticalProducts)
+            .launchIn(viewModelScope)
+    }
 }

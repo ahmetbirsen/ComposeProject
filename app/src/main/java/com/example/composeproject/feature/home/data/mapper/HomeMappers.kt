@@ -4,5 +4,7 @@ import javax.inject.Inject
 
 data class HomeMappers @Inject constructor(
     val homeVerticalProductsMapper: HomeVerticalProductsMapper,
-    val homeSuggestedProductsMapper: HomeSuggestedProductsMapper
+    val homeSuggestedProductsMapper: HomeSuggestedProductsMapper,
+    val suggestedProductDbMapper: SuggestedProductDbMapper,
+    val verticalProductDbMapper: VerticalProductDbMapper
 )

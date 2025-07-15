@@ -38,11 +38,11 @@ fun ProductCard(
     attribute: String,
     priceText: String,
     imageUrl: String,
+    quantity: Int = 0,
     onAdd: () -> Unit,
     onRemove: () -> Unit
 ) {
-    var count by remember { mutableIntStateOf(0) }
-    val isSelected = count > 0
+    val isSelected = quantity > 0
     val borderColor by animateColorAsState(
         targetValue = if (isSelected) BrandColor else Color(0xFFE0E0E0),
         animationSpec = tween(durationMillis = 300),
@@ -82,16 +82,12 @@ fun ProductCard(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = 12.dp, y = (-12).dp),
-                    count = count,
+                    count = quantity,
                     onAdd = {
-                        count++
                         onAdd()
                     },
                     onRemove = {
-                        if (count > 0) {
-                            count--
-                            onRemove()
-                        }
+                        onRemove()
                     }
                 )
             }
@@ -127,6 +123,7 @@ private fun ProductCardPreview() {
             name = "Ürün Adı",
             attribute = "Ürün Özellikleri",
             imageUrl = "",
+            quantity = 0,
             onAdd = {},
             onRemove = {},
             priceText = "₺19.99",

@@ -3,6 +3,8 @@ package com.example.composeproject.feature.home.domain.di
 import com.example.composeproject.feature.home.domain.usecase.GetSuggestedProductsUseCase
 import com.example.composeproject.feature.home.domain.usecase.GetVerticalProductsUseCase
 import com.example.composeproject.feature.home.domain.usecase.HomeUseCases
+import com.example.composeproject.feature.home.domain.usecase.SaveSuggestedProductsToDatabaseUseCase
+import com.example.composeproject.feature.home.domain.usecase.SaveVerticalProductsToDatabaseUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,11 +17,15 @@ class HomeUseCaseModule {
     @Provides
     fun provideHomeUseCases(
         getVerticalProducts: GetVerticalProductsUseCase,
-        getSuggestedProducts: GetSuggestedProductsUseCase
+        getSuggestedProducts: GetSuggestedProductsUseCase,
+        saveSuggestedProductsToDatabase: SaveSuggestedProductsToDatabaseUseCase,
+        saveVerticalProductsToDatabase: SaveVerticalProductsToDatabaseUseCase
     ): HomeUseCases {
         return HomeUseCases(
             getVerticalProducts = getVerticalProducts,
-            getSuggestedProducts = getSuggestedProducts
+            getSuggestedProducts = getSuggestedProducts,
+            saveSuggestedProductsToDatabase = saveSuggestedProductsToDatabase,
+            saveVerticalProductsToDatabase = saveVerticalProductsToDatabase
         )
     }
 }
