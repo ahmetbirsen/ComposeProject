@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.composeproject.feature.detail.DetailScreenRoute
 import com.example.composeproject.feature.home.presentation.HomeScreenRoute
 
 
@@ -26,7 +27,26 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
         startDestination = Routes.Home,
     ) {
         composable<Routes.Home> {
-            HomeScreenRoute()
+            HomeScreenRoute(
+                onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
+                    navController.navigate(
+                        Routes.Detail(
+                            productId = id,
+                            name = name,
+                            imageUrl = imageUrl,
+                            price = price,
+                            priceText = priceText,
+                            attribute = attribute
+                        )
+                    )
+                }
+            )
+        }
+
+        composable<Routes.Detail> {
+            DetailScreenRoute(
+                onNavigateBack = { navController.popBackStack() }
+            )
         }
     }
 }
