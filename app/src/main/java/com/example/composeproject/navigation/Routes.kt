@@ -10,7 +10,14 @@ sealed interface Routes {
     data object Home : Routes
 
     @Serializable
-    data object Detail : Routes
+    data class Detail(
+        val productId: String,
+        val name: String,
+        val imageUrl: String,
+        val price: Double,
+        val priceText: String,
+        val attribute: String
+    ) : Routes
 
     @Serializable
     data object Basket : Routes

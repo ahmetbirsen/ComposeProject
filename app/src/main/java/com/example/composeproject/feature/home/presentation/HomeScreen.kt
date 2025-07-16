@@ -45,6 +45,7 @@ import com.example.composeproject.designsysytem.theme.White
 
 @Composable
 fun HomeScreenRoute(
+    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> },
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val state = viewModel.uiState.collectAsState()
@@ -60,7 +61,8 @@ fun HomeScreenRoute(
             },
             onRemoveFromBasket = { productId ->
                 viewModel.removeFromBasket(productId)
-            }
+            },
+            onNavigateToDetail = onNavigateToDetail
         )
     }
 }
@@ -72,18 +74,20 @@ private fun HomeScreen(
     isLoading: Boolean = false,
     onRefresh: () -> Unit = {},
     onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },
-    onRemoveFromBasket: (String) -> Unit = { _ -> }
+    onRemoveFromBasket: (String) -> Unit = { _ -> },
+    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> }
 ) {
     // Helper function to get quantity for a product
     fun getProductQuantity(productId: String): Int {
         return state.basketItems.find { it.id == productId }?.quantity ?: 0
     }
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
         onRefresh = onRefresh
     )
 
-    Box{
+    Box {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -98,17 +102,35 @@ private fun HomeScreen(
                     .padding(vertical = 16.dp, horizontal = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                            items(state.suggestedProducts, key = { it.id }) { product ->
-                ProductCard(
-                    name = product.name,
-                    attribute = product.shortDescription,
-                    priceText = product.priceText,
-                    imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                    quantity = getProductQuantity(product.id),
-                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
-                    onRemove = { onRemoveFromBasket(product.id) }
-                )
-            }
+                items(state.suggestedProducts, key = { it.id }) { product ->
+                    ProductCard(
+                        name = product.name,
+                        attribute = product.shortDescription,
+                        priceText = product.priceText,
+                        imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                        quantity = getProductQuantity(product.id),
+                        onAdd = {
+                            onAddToBasket(
+                                product.id,
+                                product.name,
+                                product.imageURL,
+                                product.price,
+                                product.priceText
+                            )
+                        },
+                        onRemove = { onRemoveFromBasket(product.id) },
+                        onProductClick = {
+                            onNavigateToDetail(
+                                product.id,
+                                product.name,
+                                product.shortDescription,
+                                product.imageURL,
+                                product.price,
+                                product.priceText
+                            )
+                        }
+                    )
+                }
             }
             Spacer(
                 modifier = Modifier
@@ -124,17 +146,35 @@ private fun HomeScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(7.dp)
             ) {
-                            items(state.verticalProducts, key = { it.id }) { product ->
-                ProductCard(
-                    name = product.name,
-                    attribute = product.attribute,
-                    priceText = product.priceText,
-                    imageUrl = product.imageURL,
-                    quantity = getProductQuantity(product.id),
-                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
-                    onRemove = { onRemoveFromBasket(product.id) }
-                )
-            }
+                items(state.verticalProducts, key = { it.id }) { product ->
+                    ProductCard(
+                        name = product.name,
+                        attribute = product.attribute,
+                        priceText = product.priceText,
+                        imageUrl = product.imageURL,
+                        quantity = getProductQuantity(product.id),
+                        onAdd = {
+                            onAddToBasket(
+                                product.id,
+                                product.name,
+                                product.imageURL,
+                                product.price,
+                                product.priceText
+                            )
+                        },
+                        onRemove = { onRemoveFromBasket(product.id) },
+                        onProductClick = {
+                            onNavigateToDetail(
+                                product.id,
+                                product.name,
+                                product.attribute,
+                                product.imageURL,
+                                product.price,
+                                product.priceText
+                            )
+                        }
+                    )
+                }
             }
         }
 

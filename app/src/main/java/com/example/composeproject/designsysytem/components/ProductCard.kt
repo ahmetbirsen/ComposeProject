@@ -4,6 +4,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -40,7 +41,8 @@ fun ProductCard(
     imageUrl: String,
     quantity: Int = 0,
     onAdd: () -> Unit,
-    onRemove: () -> Unit
+    onRemove: () -> Unit,
+    onProductClick: () -> Unit = {}
 ) {
     val isSelected = quantity > 0
     val borderColor by animateColorAsState(
@@ -53,6 +55,7 @@ fun ProductCard(
         modifier = Modifier
             .width(140.dp)
             .padding(8.dp)
+            .clickable { onProductClick() }
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
