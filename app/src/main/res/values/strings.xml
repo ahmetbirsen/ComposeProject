@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">ComposeProject</string>
+    <string name="suggested_products">Önerilen Ürünler</string>
+    <string name="home_products_title">Ürünler</string>
+    <string name="detail_product_detail_title">Ürün Detayı</string>
+    <string name="detail_back_button_description">Back</string>
+    <string name="detail_add_to_basket_button">Sepete Ekle</string>
+    <string name="failed_clear_basket">Sepet Temizleme İşleminde Hata Oluştu</string>
+    <string name="basket_cleared">Sepet Temizlendi!</string>
+    <string name="order_completed">Sipariş Verildi!</string>
+    <string name="failed_complete_order">Sipariş Sırasında Hata Oluştu!</string>
 </resources>

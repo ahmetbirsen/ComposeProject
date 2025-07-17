@@ -30,22 +30,21 @@ class HomeViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(HomeState())
     val uiState = _uiState.onStart {
-        //start()
         getVerticalProducts()
         getSuggestedProducts()
+        observeBasketItems()
+        observeBasketTotal()
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.Lazily,
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = _uiState.value
     )
 
-    init {
-        // Başlangıçta basket verilerini yükle
-        observeBasketItems()
-        observeBasketTotal()
+    fun onResume() {
+        refreshBasketData()
     }
 
-    fun getVerticalProducts() {
+    private fun getVerticalProducts() {
         safeFlowApiCall {
             homeUseCases.getVerticalProducts()
         }.onSuccess { response ->
@@ -54,14 +53,13 @@ class HomeViewModel @Inject constructor(
                     verticalProducts = response.products
                 )
             }
-            // Save vertical products to database
             saveVerticalProductsToDatabase(response.products)
         }.onError {
 
         }.launchIn(viewModelScope)
     }
 
-    fun getSuggestedProducts() {
+    private fun getSuggestedProducts() {
         safeFlowApiCall {
             homeUseCases.getSuggestedProducts()
         }.onSuccess { response ->
@@ -70,8 +68,7 @@ class HomeViewModel @Inject constructor(
                     suggestedProducts = response.suggestedProducts
                 )
             }
-            // Save suggested products to database
-            saveSuggestedProductsToDatabase(response.suggestedProducts)
+             saveSuggestedProductsToDatabase(response.suggestedProducts)
         }.onError {
 
         }.launchIn(viewModelScope)
@@ -138,8 +135,6 @@ class HomeViewModel @Inject constructor(
             }
             .launchIn(viewModelScope)
     }
-
-
 
     private fun saveSuggestedProductsToDatabase(suggestedProducts: List<com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel>) {
         homeUseCases.saveSuggestedProductsToDatabase(suggestedProducts)

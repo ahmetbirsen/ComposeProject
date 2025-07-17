@@ -55,13 +55,20 @@ val CounterText = TextStyle(
     fontSize = 12.sp,
 )
 
-val ProductNameText = TextStyle(
+val SmallTextSBold = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.SemiBold,
     fontSize = 14.sp,
     lineHeight = 18.sp,
     letterSpacing = 0.sp
 )
+
+val XSmallTextSBold = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.SemiBold,
+    fontSize = 12.sp
+)
+
 
 val ProductAttributeText = TextStyle(
     fontFamily = FontFamily.Default,
