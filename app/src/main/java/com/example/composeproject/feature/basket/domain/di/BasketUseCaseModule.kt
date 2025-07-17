@@ -3,6 +3,7 @@ package com.example.composeproject.feature.basket.domain.di
 import com.example.composeproject.feature.basket.domain.BasketRepository
 import com.example.composeproject.feature.basket.domain.usecase.AddToBasketUseCase
 import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
+import com.example.composeproject.feature.basket.domain.usecase.ClearBasketUseCase
 import com.example.composeproject.feature.basket.domain.usecase.GetBasketItemsUseCase
 import com.example.composeproject.feature.basket.domain.usecase.GetBasketTotalUseCase
 import com.example.composeproject.feature.basket.domain.usecase.RemoveFromBasketUseCase
@@ -20,13 +21,15 @@ class BasketUseCaseModule {
         addToBasket: AddToBasketUseCase,
         removeFromBasket: RemoveFromBasketUseCase,
         getBasketItems: GetBasketItemsUseCase,
-        getBasketTotal: GetBasketTotalUseCase
+        getBasketTotal: GetBasketTotalUseCase,
+        clearBasket: ClearBasketUseCase
     ): BasketUseCases {
         return BasketUseCases(
             addToBasket = addToBasket,
             removeFromBasket = removeFromBasket,
             getBasketItems = getBasketItems,
-            getBasketTotal = getBasketTotal
+            getBasketTotal = getBasketTotal,
+            clearBasket = clearBasket
         )
     }
 } 

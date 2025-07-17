@@ -1,6 +1,7 @@
-package com.example.composeproject.feature.home.presentation
+package com.example.composeproject.feature.home.presentation.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,9 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,40 +40,19 @@ import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.designsysytem.theme.TitleLarge
 import com.example.composeproject.designsysytem.theme.White
-
-@Composable
-fun HomeScreenRoute(
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> },
-    viewModel: HomeViewModel = hiltViewModel(),
-) {
-    val state = viewModel.uiState.collectAsState()
-    val isLoading by viewModel.networkLoadingStateFlow.collectAsState()
-    val isLoadingBoolean = isLoading.isLoading
-    Surface(color = Gray) {
-        HomeScreen(
-            state = state.value,
-            isLoading = isLoadingBoolean,
-            onRefresh = { viewModel.refreshData() },
-            onAddToBasket = { productId, name, imageURL, price, priceText ->
-                viewModel.addToBasket(productId, name, imageURL, price, priceText)
-            },
-            onRemoveFromBasket = { productId ->
-                viewModel.removeFromBasket(productId)
-            },
-            onNavigateToDetail = onNavigateToDetail
-        )
-    }
-}
+import com.example.composeproject.feature.home.presentation.HomeState
+import com.example.composeproject.feature.home.presentation.HomeViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-private fun HomeScreen(
+fun HomeScreen(
     state: HomeState,
     isLoading: Boolean = false,
     onRefresh: () -> Unit = {},
     onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },
     onRemoveFromBasket: (String) -> Unit = { _ -> },
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> }
+    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> },
+    onNavigateToBasket: () -> Unit = {}
 ) {
     // Helper function to get quantity for a product
     fun getProductQuantity(productId: String): Int {
@@ -93,7 +70,7 @@ private fun HomeScreen(
                 .fillMaxSize()
                 .pullRefresh(pullRefreshState)
         ) {
-            HomeTopBar(basketTotal = state.basketTotal)
+            HomeTopBar(basketTotal = state.basketTotal, onNavigateToBasket = onNavigateToBasket)
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
                 modifier = Modifier
@@ -188,7 +165,7 @@ private fun HomeScreen(
 
 
 @Composable
-private fun HomeTopBar(basketTotal: Double) {
+private fun HomeTopBar(basketTotal: Double, onNavigateToBasket: () -> Unit = {}) {
     Surface(
         color = BrandColor,
         shadowElevation = 4.dp
@@ -212,6 +189,7 @@ private fun HomeTopBar(basketTotal: Double) {
                 modifier = Modifier
                     .width(100.dp)
                     .height(34.dp)
+                    .clickable { onNavigateToBasket() }
                     .align(Alignment.CenterVertically)
             )
         }

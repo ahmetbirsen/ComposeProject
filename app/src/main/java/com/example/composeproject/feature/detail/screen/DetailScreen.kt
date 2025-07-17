@@ -1,4 +1,4 @@
-package com.example.composeproject.feature.detail
+package com.example.composeproject.feature.detail.screen
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -40,28 +40,12 @@ import com.example.composeproject.designsysytem.theme.PriceText
 import com.example.composeproject.designsysytem.theme.TitleLarge
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
+import com.example.composeproject.feature.detail.DetailAction
+import com.example.composeproject.feature.detail.DetailState
+import com.example.composeproject.feature.detail.DetailViewModel
 
 @Composable
-fun DetailScreenRoute(
-    onNavigateBack: () -> Unit,
-    viewModel: DetailViewModel = hiltViewModel()
-) {
-    val state = viewModel.uiState.collectAsState()
-    
-    DetailScreen(
-        state = state.value,
-        onNavigateBack = onNavigateBack,
-        onAddToBasket = { id, name, imageUrl, price, priceText ->
-            viewModel.handleAction(DetailAction.AddToBasket(id, name, imageUrl, price, priceText))
-        },
-        onRemoveFromBasket = { id ->
-            viewModel.handleAction(DetailAction.RemoveFromBasket(id))
-        }
-    )
-}
-
-@Composable
-private fun DetailScreen(
+fun DetailScreen(
     state: DetailState,
     onNavigateBack: () -> Unit = {},
     onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },

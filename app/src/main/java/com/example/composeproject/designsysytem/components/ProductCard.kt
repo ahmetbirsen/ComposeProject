@@ -17,9 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,7 +28,7 @@ import coil.compose.AsyncImage
 import com.example.composeproject.designsysytem.theme.BrandColor
 import com.example.composeproject.designsysytem.theme.PriceText
 import com.example.composeproject.designsysytem.theme.ProductAttributeText
-import com.example.composeproject.designsysytem.theme.ProductNameText
+import com.example.composeproject.designsysytem.theme.SmallTextSBold
 
 @Composable
 fun ProductCard(
@@ -103,7 +100,7 @@ fun ProductCard(
             Text(
                 text = name,
                 color = Color.Black,
-                style = ProductNameText,
+                style = SmallTextSBold,
                 maxLines = 2,
                 modifier = Modifier.padding(top = 2.dp)
             )
