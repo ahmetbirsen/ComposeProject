@@ -50,7 +50,7 @@ abstract class CoreViewModel : ViewModel() {
         }
     }
 
-    protected suspend fun onServiceErrorFlow(error: INetworkError?) {
+    private fun onServiceErrorFlow(error: INetworkError?) {
         networkState.trySend(
             NetworkState.Error(error)
         )
@@ -69,7 +69,6 @@ abstract class CoreViewModel : ViewModel() {
             }
         } catch (exception: Exception) {
             onCatch(
-
                 errorType = errorType,
                 exception = exception
             )
@@ -81,31 +80,7 @@ abstract class CoreViewModel : ViewModel() {
         }
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-    suspend fun <T : Any> suspendSafeFlowApiCall(
-        loadingType: LoadingType = LoadingType.Default,
-        errorType: ErrorType = ErrorType.Content,
-        call: suspend () -> Flow<RestResult<T>>
-    ): Flow<RestResult<T>> {
-        return try {
-            call.invoke().transform { restResult ->
-                handleResult(restResult, errorType, loadingType)
-                emit(restResult)
-            }
-        } catch (exception: Exception) {
-            onCatch(
-                errorType = errorType,
-                exception = exception
-            )
-        }.catch {
-            onCatch<T>(
-                errorType = errorType,
-                exception = it
-            )
-        }
-    }
-
-    protected suspend fun <T : Any> handleResult(
+    private suspend fun <T : Any> handleResult(
         restResult: RestResult<T>,
         errorType: ErrorType,
         loadingType: LoadingType
@@ -147,7 +122,7 @@ abstract class CoreViewModel : ViewModel() {
         }
     }
 
-    fun handleLoading(result: RestResult.Loading) {
+    private fun handleLoading(result: RestResult.Loading) {
         if (result.loading) {
             loadingCounter++
         } else {
@@ -161,7 +136,7 @@ abstract class CoreViewModel : ViewModel() {
         }
     }
 
-    protected suspend fun handleSuccessResult(result: Any, status: IResponseStatus? = null) {
+    private fun handleSuccessResult(result: Any, status: IResponseStatus? = null) {
         networkState.trySend(
             NetworkState.Success(result, status)
         )
