@@ -12,7 +12,7 @@ class NoConnectionInterceptor(private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         return if (!isConnectionOn()) {
-            throw IOException("NoInternetConnection")
+            throw NoInternetConnectionException()
         } else {
             chain.proceed(chain.request())
         }
@@ -36,3 +36,5 @@ class NoConnectionInterceptor(private val context: Context) : Interceptor {
                 )
     }
 }
+
+class NoInternetConnectionException : IOException("NoInternetConnection")

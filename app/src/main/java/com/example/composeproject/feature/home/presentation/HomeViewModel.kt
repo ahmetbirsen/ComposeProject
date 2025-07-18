@@ -1,9 +1,14 @@
 package com.example.composeproject.feature.home.presentation
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.composeproject.R
 import com.example.composeproject.core.CoreViewModel
+import com.example.composeproject.core.UiText
 import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
+import com.example.composeproject.core.network.ErrorType
+import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
 import com.example.composeproject.feature.home.domain.usecase.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +23,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -42,10 +48,16 @@ class HomeViewModel @Inject constructor(
 
     fun onResume() {
         refreshBasketData()
+        // Internet bağlantısı kontrolü için network çağrısı yap
+        refreshData()
     }
 
     private fun getVerticalProducts() {
-        safeFlowApiCall {
+        safeFlowApiCall(
+            loadingType = LoadingType.FullScreen,
+            errorType = ErrorType.Content,
+            loadingMessage = UiText.StringResource(R.string.loading)
+        ) {
             homeUseCases.getVerticalProducts()
         }.onSuccess { response ->
             _uiState.update { state ->
@@ -55,12 +67,16 @@ class HomeViewModel @Inject constructor(
             }
             saveVerticalProductsToDatabase(response.products)
         }.onError {
-
+            // Error zaten CoreViewModel tarafından handle edilecek
         }.launchIn(viewModelScope)
     }
 
     private fun getSuggestedProducts() {
-        safeFlowApiCall {
+        safeFlowApiCall(
+            loadingType = LoadingType.Custom,
+            errorType = ErrorType.Content,
+            loadingMessage = UiText.StringResource(R.string.loading)
+        ) {
             homeUseCases.getSuggestedProducts()
         }.onSuccess { response ->
             _uiState.update { state ->
@@ -70,31 +86,52 @@ class HomeViewModel @Inject constructor(
             }
              saveSuggestedProductsToDatabase(response.suggestedProducts)
         }.onError {
-
+            // Error zaten CoreViewModel tarafından handle edilecek
         }.launchIn(viewModelScope)
     }
 
     fun refreshData() {
-        getVerticalProducts()
-        getSuggestedProducts()
+        viewModelScope.launch {
+            try {
+                startFullScreenLoading()
+                getVerticalProducts()
+                getSuggestedProducts()
+            } finally {
+                stopLoading()
+            }
+        }
     }
 
     fun addToBasket(productId: String, name: String, imageURL: String, price: Double, priceText: String) {
-        basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
-            .onEach {
-                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
-                refreshBasketData()
+        viewModelScope.launch {
+            try {
+                startButtonLoading()
+                basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
+                    .onEach {
+                        // Basket işlemi tamamlandıktan sonra UI'ı güncelle
+                        refreshBasketData()
+                    }
+                    .launchIn(viewModelScope)
+            } finally {
+                stopLoading()
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     fun removeFromBasket(productId: String) {
-        basketUseCases.removeFromBasket(productId)
-            .onEach {
-                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
-                refreshBasketData()
+        viewModelScope.launch {
+            try {
+                startButtonLoading()
+                basketUseCases.removeFromBasket(productId)
+                    .onEach {
+                        // Basket işlemi tamamlandıktan sonra UI'ı güncelle
+                        refreshBasketData()
+                    }
+                    .launchIn(viewModelScope)
+            } finally {
+                stopLoading()
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun refreshBasketData() {

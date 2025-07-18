@@ -9,6 +9,7 @@ import com.example.composeproject.feature.detail.DetailViewModel
 @Composable
 fun DetailScreenRoute(
     onNavigateBack: () -> Unit,
+    onNavigateToBasket: () -> Unit,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val state = viewModel.uiState.collectAsState()
@@ -21,6 +22,7 @@ fun DetailScreenRoute(
         },
         onRemoveFromBasket = { id ->
             viewModel.handleAction(DetailAction.RemoveFromBasket(id))
-        }
+        },
+        onNavigateToBasket = onNavigateToBasket
     )
 }

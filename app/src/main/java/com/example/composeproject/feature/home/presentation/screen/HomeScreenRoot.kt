@@ -19,8 +19,6 @@ fun HomeScreenRoute(
     val isLoading by viewModel.networkLoadingStateFlow.collectAsState()
     val isLoadingBoolean = isLoading.isLoading
 
-
-
     Surface(color = Gray) {
         HomeScreen(
             state = state.value,
