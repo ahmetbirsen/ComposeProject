@@ -11,25 +11,19 @@ import com.example.composeproject.core.network.IResponseStatus
 import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.core.network.NetworkState
 import com.example.composeproject.core.network.NetworkStateLoadingState
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.JsonElement
 
 abstract class CoreViewModel : ViewModel() {
 
     private var loadingCounter = 0
-
-    private val networkState = Channel<NetworkState>()
-    val networkStateFlow = networkState.receiveAsFlow()
 
     private val _networkLoadingStateFlow = MutableStateFlow(NetworkStateLoadingState())
     val networkLoadingStateFlow: StateFlow<NetworkStateLoadingState> =
@@ -43,13 +37,8 @@ abstract class CoreViewModel : ViewModel() {
         handleLoading(RestResult.Loading(false))
     }
 
-    // Convenience methods for different loading types
     open fun startFullScreenLoading(message: String = "Yükleniyor...") {
         startLoading(LoadingType.FullScreen, message)
-    }
-
-    open fun startCustomLoading(message: String = "Yükleniyor...") {
-        startLoading(LoadingType.Custom, message)
     }
 
     open fun startButtonLoading(message: String = "Yükleniyor...") {
@@ -58,16 +47,9 @@ abstract class CoreViewModel : ViewModel() {
 
     open fun onServiceError(error: INetworkError?) {
         viewModelScope.launch {
-            networkState.trySend(
-                NetworkState.Error(error)
-            )
+            val networkStateError = NetworkState.Error(error)
+            emitGlobalNetworkState(networkStateError)
         }
-    }
-
-    private fun onServiceErrorFlow(error: INetworkError?) {
-        networkState.trySend(
-            NetworkState.Error(error)
-        )
     }
 
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
@@ -106,7 +88,7 @@ abstract class CoreViewModel : ViewModel() {
 
             is RestResult.Error -> {
                 if (errorType != ErrorType.None) {
-                    onServiceErrorFlow(restResult.error)
+                    onServiceError(restResult.error)
                 }
             }
 
@@ -150,8 +132,22 @@ abstract class CoreViewModel : ViewModel() {
     }
 
     private fun handleSuccessResult(result: Any, status: IResponseStatus? = null) {
-        networkState.trySend(
-            NetworkState.Success(result, status)
-        )
+        emitGlobalNetworkState(NetworkState.Success(
+            args = result,
+            status = status
+        ))
+    }
+
+    companion object {
+        private val _globalNetworkStateFlow = MutableStateFlow<NetworkState?>(null)
+        val globalNetworkStateFlow: StateFlow<NetworkState?> = _globalNetworkStateFlow.asStateFlow()
+
+        fun emitGlobalNetworkState(networkState: NetworkState?) {
+            _globalNetworkStateFlow.value = networkState
+        }
+
+        fun clearGlobalNetworkState() {
+            _globalNetworkStateFlow.value = null
+        }
     }
 }

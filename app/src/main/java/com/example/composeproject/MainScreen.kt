@@ -18,12 +18,9 @@ import androidx.navigation.NavHostController
 import com.example.composeproject.core.network.Error
 import com.example.composeproject.core.network.INetworkError
 import com.example.composeproject.core.network.NetworkErrorType
-import com.example.composeproject.core.network.NetworkState
 import com.example.composeproject.core.network.toError
 import com.example.composeproject.designsysytem.components.CustomDialog
 import com.example.composeproject.designsysytem.components.DialogType
-import com.example.composeproject.feature.basket.presentation.BasketViewModel
-import com.example.composeproject.feature.home.presentation.HomeViewModel
 import com.example.composeproject.navigation.NavigationRoot
 import kotlinx.coroutines.flow.collectLatest
 
@@ -39,7 +36,7 @@ fun MainScreen(
         NavigationRoot(navController = navController)
         
         // Global error handler
-        NetworkErrorHandler()
+        NetworkErrorHandler(viewModel)
         
         // Internet bağlantısı kontrolü
         InternetConnectionChecker(context)
@@ -84,41 +81,17 @@ private fun isInternetAvailable(context: Context): Boolean {
 
 @Composable
 fun NetworkErrorHandler(
-    viewModel: MainViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel = hiltViewModel(),
-    basketViewModel: BasketViewModel = hiltViewModel()
+    viewModel: MainViewModel
 ) {
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    // HomeViewModel network state'ini dinle
+    // MainViewModel'den gelen error'ları dinle
     LaunchedEffect(Unit) {
-        homeViewModel.networkStateFlow.collectLatest { networkState ->
-            when (networkState) {
-                is NetworkState.Error -> {
-                    val message = getErrorMessage(networkState.error)
-                    errorMessage = message
-                    showErrorDialog = true
-                }
-                is NetworkState.Success -> {
-                    // Success durumunda bir şey yapmaya gerek yok
-                }
-            }
-        }
-    }
-
-    // BasketViewModel network state'ini dinle
-    LaunchedEffect(Unit) {
-        basketViewModel.networkStateFlow.collectLatest { networkState ->
-            when (networkState) {
-                is NetworkState.Error -> {
-                    val message = getErrorMessage(networkState.error)
-                    errorMessage = message
-                    showErrorDialog = true
-                }
-                is NetworkState.Success -> {
-                    // Success durumunda bir şey yapmaya gerek yok
-                }
+        viewModel.errorFlow.collectLatest { error ->
+            if (error != null) {
+                errorMessage = getErrorMessage(error)
+                showErrorDialog = true
             }
         }
     }
@@ -129,9 +102,11 @@ fun NetworkErrorHandler(
             dialogType = DialogType.ERROR,
             onDismiss = {
                 showErrorDialog = false
+                viewModel.clearError()
             },
             onConfirm = {
                 showErrorDialog = false
+                viewModel.clearError()
             },
             errorMessage = errorMessage
         )

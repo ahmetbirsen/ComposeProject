@@ -11,6 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.composeproject.MainViewModel
 import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.designsysytem.components.CustomLoading
