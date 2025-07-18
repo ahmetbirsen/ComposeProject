@@ -73,7 +73,7 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
 
         composable<Routes.Detail> {
             DetailScreenRoute(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.navigateUp() },
                 onNavigateToBasket = { navController.navigate(Routes.Basket) }
             )
         }
@@ -82,7 +82,7 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
             val basketViewModel = hiltViewModel<BasketViewModel>()
 
             BasketScreenRoute(
-                onNavigateBack = { navController.popBackStack() },
+                onNavigateBack = { navController.navigateUp() },
                 onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
                     navController.navigate(
                         Routes.Detail(
