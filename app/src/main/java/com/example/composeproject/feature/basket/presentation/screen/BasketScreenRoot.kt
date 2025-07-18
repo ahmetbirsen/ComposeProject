@@ -75,7 +75,11 @@ fun BasketScreenRoute(
                     onNavigateToHome()
                 }
                 null -> {}
+                DialogType.ERROR -> {
+
+                }
             }
-        }
+        },
+        viewModel = viewModel
     )
 }

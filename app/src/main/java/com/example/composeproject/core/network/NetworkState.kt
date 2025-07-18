@@ -9,5 +9,7 @@ sealed interface NetworkState {
 
 data class NetworkStateLoadingState(
     val loadingCount: Int = 0,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val loadingType: LoadingType = LoadingType.Default,
+    val loadingMessage: String = "Yükleniyor..."
 )

@@ -14,12 +14,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composeproject.R
+import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.designsysytem.components.BasketBottomBar
 import com.example.composeproject.designsysytem.components.BasketItemCard
 import com.example.composeproject.designsysytem.components.BasketTopBar
@@ -28,6 +31,7 @@ import com.example.composeproject.designsysytem.components.ProductCard
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.TitleLarge
 import com.example.composeproject.feature.basket.presentation.BasketState
+import com.example.composeproject.feature.basket.presentation.BasketViewModel
 
 @Composable
 fun BasketScreen(
@@ -39,8 +43,12 @@ fun BasketScreen(
     onClearBasket: () -> Unit = {},
     onCompleteOrder: () -> Unit = {},
     onDismissDialog: () -> Unit = {},
-    onConfirmDialog: () -> Unit = {}
+    onConfirmDialog: () -> Unit = {},
+    viewModel: BasketViewModel = hiltViewModel()
 ) {
+    val loadingState = viewModel.networkLoadingStateFlow.collectAsState()
+    val isButtonLoading = loadingState.value.isLoading && loadingState.value.loadingType == LoadingType.Button
+    
     Surface(color = Color.White) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -150,7 +158,8 @@ fun BasketScreen(
                 CustomDialog(
                     dialogType = state.dialogType,
                     onDismiss = onDismissDialog,
-                    onConfirm = onConfirmDialog
+                    onConfirm = onConfirmDialog,
+                    isLoading = isButtonLoading
                 )
             }
         }

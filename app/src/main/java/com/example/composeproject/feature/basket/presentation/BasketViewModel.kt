@@ -6,6 +6,8 @@ import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.UiText
 import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
+import com.example.composeproject.core.network.ErrorType
+import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.designsysytem.components.DialogType
 import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
 import com.example.composeproject.feature.home.domain.usecase.GetSuggestedProductsUseCase
@@ -21,6 +23,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
 
 @HiltViewModel
 class BasketViewModel @Inject constructor(
@@ -62,6 +65,11 @@ class BasketViewModel @Inject constructor(
         }
     }
 
+    fun onResume() {
+        // Internet bağlantısı kontrolü için network çağrısı yap
+        loadSuggestedProducts()
+    }
+
     private fun loadBasketItems() {
         basketUseCases.getBasketItems()
             .onEach { basketItems ->
@@ -73,14 +81,18 @@ class BasketViewModel @Inject constructor(
     }
 
     private fun loadSuggestedProducts() {
-        safeFlowApiCall {
+        safeFlowApiCall(
+            loadingType = LoadingType.Custom,
+            errorType = ErrorType.Content,
+            loadingMessage = "Yükleniyor..."
+        ) {
             getSuggestedProductsUseCase()
         }.onSuccess { response ->
             _uiState.update { state ->
                 state.copy(suggestedProducts = response.suggestedProducts)
             }
         }.onError {
-            // Silently fail for suggested products
+            // Error zaten CoreViewModel tarafından handle edilecek
         }.launchIn(viewModelScope)
     }
 
@@ -91,30 +103,47 @@ class BasketViewModel @Inject constructor(
         productPrice: Double,
         productPriceText: String
     ) {
-        basketUseCases.addToBasket(
-            productId,
-            productName,
-            productImageUrl,
-            productPrice,
-            productPriceText
-        )
-            .onEach {
-                refreshBasketData()
+        viewModelScope.launch {
+            try {
+                startButtonLoading("Yükleniyor...")
+                basketUseCases.addToBasket(
+                    productId,
+                    productName,
+                    productImageUrl,
+                    productPrice,
+                    productPriceText
+                )
+                    .onEach {
+                        refreshBasketData()
+                    }
+                    .launchIn(viewModelScope)
+            } finally {
+                stopLoading()
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun removeFromBasket(productId: String) {
-        basketUseCases.removeFromBasket(productId)
-            .onEach {
-                refreshBasketData()
+        viewModelScope.launch {
+            try {
+                startButtonLoading("Yükleniyor...")
+                basketUseCases.removeFromBasket(productId)
+                    .onEach {
+                        refreshBasketData()
+                    }
+                    .launchIn(viewModelScope)
+            } finally {
+                stopLoading()
             }
-            .launchIn(viewModelScope)
+        }
     }
 
     private fun clearBasket() {
         viewModelScope.launch {
             try {
+                // CoreViewModel loading state'ini başlat
+                startLoading()
+                delay(2000)
                 basketUseCases.clearBasket()
                 hideDialog()
                 refreshBasketData()
@@ -125,6 +154,9 @@ class BasketViewModel @Inject constructor(
                         UiText.StringResource(R.string.failed_clear_basket)
                     )
                 )
+            } finally {
+                // CoreViewModel loading state'ini bitir
+                stopLoading()
             }
         }
     }
@@ -140,6 +172,9 @@ class BasketViewModel @Inject constructor(
     private fun completeOrder() {
         viewModelScope.launch {
             try {
+                // CoreViewModel loading state'ini başlat
+                startButtonLoading("Yükleniyor...")
+                
                 basketUseCases.clearBasket()
                 hideDialog()
                 eventChannel.trySend(BasketEvent.OrderCompleted)
@@ -149,6 +184,9 @@ class BasketViewModel @Inject constructor(
                         UiText.StringResource(R.string.failed_complete_order)
                     )
                 )
+            } finally {
+                // CoreViewModel loading state'ini bitir
+                stopLoading()
             }
         }
     }
