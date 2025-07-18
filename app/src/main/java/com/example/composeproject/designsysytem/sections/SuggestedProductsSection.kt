@@ -2,17 +2,23 @@ package com.example.composeproject.designsysytem.sections
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.ProductCard
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
-import com.example.composeproject.designsysytem.theme.White
+import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel
 
@@ -24,24 +30,36 @@ fun SuggestedProductsSection(
     onRemoveFromBasket: (String) -> Unit,
     onNavigateToDetail: (String, String, String, String, Double, String) -> Unit
 ) {
-    LazyRow(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = White)
-            .padding(vertical = 16.dp, horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+            .background(color = Gray)
     ) {
-        items(products, key = { it.id }) { product ->
-            ProductCard(
-                name = product.name,
-                attribute = product.shortDescription,
-                priceText = product.priceText,
-                imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
-                onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
-                onRemove = { onRemoveFromBasket(product.id) },
-                onProductClick = { onNavigateToDetail(product.id, product.name, product.shortDescription, product.imageURL, product.price, product.priceText) }
-            )
+        Text(
+            text = stringResource(R.string.suggested_products),
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        
+        LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(products, key = { it.id }) { product ->
+                ProductCard(
+                    name = product.name,
+                    attribute = product.shortDescription,
+                    priceText = product.priceText,
+                    imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                    quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
+                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onRemove = { onRemoveFromBasket(product.id) },
+                    onProductClick = { onNavigateToDetail(product.id, product.name, product.shortDescription, product.imageURL, product.price, product.priceText) }
+                )
+            }
         }
     }
 }
