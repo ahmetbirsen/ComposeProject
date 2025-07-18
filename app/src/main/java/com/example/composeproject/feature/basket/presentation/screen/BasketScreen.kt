@@ -1,5 +1,6 @@
 package com.example.composeproject.feature.basket.presentation.screen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,29 +8,35 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composeproject.R
 import com.example.composeproject.core.network.LoadingType
+import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketBottomBar
 import com.example.composeproject.designsysytem.components.BasketItemCard
-import com.example.composeproject.designsysytem.components.BasketTopBar
 import com.example.composeproject.designsysytem.components.CustomDialog
 import com.example.composeproject.designsysytem.components.ProductCard
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
+import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.designsysytem.theme.TitleLarge
+import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.presentation.BasketState
 import com.example.composeproject.feature.basket.presentation.BasketViewModel
 
@@ -54,11 +61,39 @@ fun BasketScreen(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                BasketTopBar(
-                    onNavigateBack = onNavigateBack,
-                    onClearBasket = onClearBasket
+                AppTopBar(
+                    leftIcon = {
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable { onNavigateBack() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_close),
+                                contentDescription = stringResource(R.string.back),
+                                tint = White,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    },
+                    rightComponent = {
+                        Box(
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable { onClearBasket() },
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_remove),
+                                contentDescription = stringResource(R.string.clear_basket),
+                                tint = White,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    },
+                    title = stringResource(R.string.my_basket)
                 )
-                
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -84,8 +119,8 @@ fun BasketScreen(
                                 onNavigateToDetail(
                                     basketItem.id,
                                     basketItem.name,
-                                    "Attribute", // Basket item'da attribute yok, placeholder
                                     basketItem.imageURL,
+                                    basketItem.attribute,
                                     basketItem.price,
                                     basketItem.priceText
                                 )
@@ -97,7 +132,7 @@ fun BasketScreen(
                         item {
                             HorizontalDivider(
                                 modifier = Modifier.padding(vertical = 16.dp),
-                                color = Color(0xFFE0E0E0)
+                                color = Gray
                             )
                         }
                     }

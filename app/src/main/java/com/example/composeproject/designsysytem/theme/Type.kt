@@ -63,6 +63,12 @@ val SmallTextSBold = TextStyle(
     letterSpacing = 0.sp
 )
 
+val SmallTextBold = TextStyle(
+    fontFamily = FontFamily.Default,
+    fontWeight = FontWeight.Bold,
+    fontSize = 14.sp,
+)
+
 val XSmallTextSBold = TextStyle(
     fontFamily = FontFamily.Default,
     fontWeight = FontWeight.SemiBold,

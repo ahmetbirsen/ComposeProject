@@ -2,7 +2,9 @@ package com.example.composeproject.feature.home.presentation
 
 import android.util.Log
 import androidx.lifecycle.viewModelScope
+import com.example.composeproject.R
 import com.example.composeproject.core.CoreViewModel
+import com.example.composeproject.core.UiText
 import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
 import com.example.composeproject.core.network.ErrorType
@@ -54,7 +56,7 @@ class HomeViewModel @Inject constructor(
         safeFlowApiCall(
             loadingType = LoadingType.FullScreen,
             errorType = ErrorType.Content,
-            loadingMessage = "Yükleniyor..."
+            loadingMessage = UiText.StringResource(R.string.loading)
         ) {
             homeUseCases.getVerticalProducts()
         }.onSuccess { response ->
@@ -73,7 +75,7 @@ class HomeViewModel @Inject constructor(
         safeFlowApiCall(
             loadingType = LoadingType.Custom,
             errorType = ErrorType.Content,
-            loadingMessage = "Yükleniyor..."
+            loadingMessage = UiText.StringResource(R.string.loading)
         ) {
             homeUseCases.getSuggestedProducts()
         }.onSuccess { response ->
@@ -91,7 +93,7 @@ class HomeViewModel @Inject constructor(
     fun refreshData() {
         viewModelScope.launch {
             try {
-                startFullScreenLoading("Yükleniyor...")
+                startFullScreenLoading()
                 getVerticalProducts()
                 getSuggestedProducts()
             } finally {
@@ -103,7 +105,7 @@ class HomeViewModel @Inject constructor(
     fun addToBasket(productId: String, name: String, imageURL: String, price: Double, priceText: String) {
         viewModelScope.launch {
             try {
-                startButtonLoading("Yükleniyor...")
+                startButtonLoading()
                 basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
                     .onEach {
                         // Basket işlemi tamamlandıktan sonra UI'ı güncelle
@@ -119,7 +121,7 @@ class HomeViewModel @Inject constructor(
     fun removeFromBasket(productId: String) {
         viewModelScope.launch {
             try {
-                startButtonLoading("Yükleniyor...")
+                startButtonLoading()
                 basketUseCases.removeFromBasket(productId)
                     .onEach {
                         // Basket işlemi tamamlandıktan sonra UI'ı güncelle

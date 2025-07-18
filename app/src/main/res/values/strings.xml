@@ -9,4 +9,19 @@
     <string name="basket_cleared">Sepet Temizlendi!</string>
     <string name="order_completed">Sipariş Verildi!</string>
     <string name="failed_complete_order">Sipariş Sırasında Hata Oluştu!</string>
+    <string name="loading">Yükleniyor…</string>
+    <string name="clear_basket">Sepeti Temizle</string>
+    <string name="complete_order">Siparişi Tamamla</string>
+    <string name="error">Hata!</string>
+    <string name="clear_basket_desc">Sepetinizdeki tüm ürünleri silmek istediğinizden emin misiniz?</string>
+    <string name="complete_order_desc">Siparişinizi tamamlamak istediğinizden emin misiniz?</string>
+    <string name="error_desc">Bir hata oluştu. Lütfen tekrar deneyin.</string>
+    <string name="ok">Tamam</string>
+    <string name="cancel">İptal</string>
+    <string name="dialog_spinner_label">dialog_spinner</string>
+    <string name="dialog_rotation_label">dialog_rotation</string>
+    <string name="clear">Temizle</string>
+    <string name="yes">Evet</string>
+    <string name="my_basket">Sepetim</string>
+    <string name="back">Geri</string>
 </resources>

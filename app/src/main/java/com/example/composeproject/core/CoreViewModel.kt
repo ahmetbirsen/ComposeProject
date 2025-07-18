@@ -3,6 +3,7 @@ package com.example.composeproject.core
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.composeproject.R
 import com.example.composeproject.core.model.RestResult
 import com.example.composeproject.core.network.Error
 import com.example.composeproject.core.network.ErrorType
@@ -11,12 +12,14 @@ import com.example.composeproject.core.network.IResponseStatus
 import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.core.network.NetworkState
 import com.example.composeproject.core.network.NetworkStateLoadingState
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.transform
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +32,10 @@ abstract class CoreViewModel : ViewModel() {
     val networkLoadingStateFlow: StateFlow<NetworkStateLoadingState> =
         _networkLoadingStateFlow.asStateFlow()
 
-    open fun startLoading(loadingType: LoadingType = LoadingType.Default, message: String = "Yükleniyor...") {
+    open fun startLoading(
+        loadingType: LoadingType = LoadingType.Default,
+        message: UiText =  UiText.StringResource(R.string.loading)
+    ) {
         handleLoading(RestResult.Loading(true), loadingType, message)
     }
 
@@ -37,11 +43,15 @@ abstract class CoreViewModel : ViewModel() {
         handleLoading(RestResult.Loading(false))
     }
 
-    open fun startFullScreenLoading(message: String = "Yükleniyor...") {
+    open fun startFullScreenLoading(
+        message: UiText =  UiText.StringResource(R.string.loading)
+    ) {
         startLoading(LoadingType.FullScreen, message)
     }
 
-    open fun startButtonLoading(message: String = "Yükleniyor...") {
+    open fun startButtonLoading(
+        message: UiText =  UiText.StringResource(R.string.loading)
+    ) {
         startLoading(LoadingType.Button, message)
     }
 
@@ -56,7 +66,7 @@ abstract class CoreViewModel : ViewModel() {
     fun <T : Any> safeFlowApiCall(
         loadingType: LoadingType = LoadingType.Default,
         errorType: ErrorType = ErrorType.Content,
-        loadingMessage: String = "Yükleniyor...",
+        loadingMessage: UiText,
         call: () -> Flow<RestResult<T>>
     ): Flow<RestResult<T>> {
         return try {
@@ -81,7 +91,7 @@ abstract class CoreViewModel : ViewModel() {
         restResult: RestResult<T>,
         errorType: ErrorType,
         loadingType: LoadingType,
-        loadingMessage: String
+        loadingMessage: UiText
     ) {
         when (restResult) {
             is RestResult.Empty -> Unit
@@ -115,7 +125,11 @@ abstract class CoreViewModel : ViewModel() {
         }
     }
 
-    private fun handleLoading(result: RestResult.Loading, loadingType: LoadingType = LoadingType.Default, message: String = "Yükleniyor...") {
+    private fun handleLoading(
+        result: RestResult.Loading,
+        loadingType: LoadingType = LoadingType.Default,
+        message: UiText =  UiText.StringResource(R.string.loading)
+    ) {
         if (result.loading) {
             loadingCounter++
         } else {
@@ -126,28 +140,32 @@ abstract class CoreViewModel : ViewModel() {
                 loadingCount = loadingCounter,
                 isLoading = loadingCounter > 0,
                 loadingType = if (result.loading) loadingType else LoadingType.Default,
-                loadingMessage = if (result.loading) message else "Yükleniyor..."
+                loadingMessage = if (result.loading) message else UiText.StringResource(R.string.loading)
             )
         }
     }
 
-    private fun handleSuccessResult(result: Any, status: IResponseStatus? = null) {
-        emitGlobalNetworkState(NetworkState.Success(
-            args = result,
-            status = status
-        ))
+    private suspend fun handleSuccessResult(result: Any, status: IResponseStatus? = null) {
+        emitGlobalNetworkState(
+            NetworkState.Success(
+                args = result,
+                status = status
+            )
+        )
     }
 
     companion object {
-        private val _globalNetworkStateFlow = MutableStateFlow<NetworkState?>(null)
-        val globalNetworkStateFlow: StateFlow<NetworkState?> = _globalNetworkStateFlow.asStateFlow()
+        private val globalNetworkStateChannel = Channel<NetworkState>()
+        val globalNetworkStateFlow = globalNetworkStateChannel.receiveAsFlow()
 
-        fun emitGlobalNetworkState(networkState: NetworkState?) {
-            _globalNetworkStateFlow.value = networkState
+        suspend fun emitGlobalNetworkState(networkState: NetworkState?) {
+            if (networkState != null) {
+                globalNetworkStateChannel.send(networkState)
+            }
         }
 
         fun clearGlobalNetworkState() {
-            _globalNetworkStateFlow.value = null
+            globalNetworkStateChannel.trySend(NetworkState.Success(Unit))
         }
     }
 }

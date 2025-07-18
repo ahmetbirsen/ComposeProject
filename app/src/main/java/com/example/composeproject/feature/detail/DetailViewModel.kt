@@ -60,7 +60,13 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun initializeProduct(productId: String, productName: String, productAttribute: String, productImageUrl: String, productPrice: Double, productPriceText: String) {
+    private fun initializeProduct(
+        productId: String,
+        productName: String,
+        productAttribute: String,
+        productImageUrl: String,
+        productPrice: Double, productPriceText: String
+    ) {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(
                 productId = productId,

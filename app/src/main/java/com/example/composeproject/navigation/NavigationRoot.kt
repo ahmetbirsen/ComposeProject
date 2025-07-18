@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -37,57 +38,13 @@ fun NavigationRoot(
     }
 }
 
-@Composable
-fun GlobalLoadingHandler(
-    coreViewModel: CoreViewModel
-) {
-    val loadingState = coreViewModel.networkLoadingStateFlow.collectAsState()
-    
-    loadingState.value?.let { loadingStateValue ->
-        when (loadingStateValue.loadingType) {
-            LoadingType.FullScreen -> {
-                CustomLoading(
-                    isLoading = loadingStateValue.isLoading,
-                    message = loadingStateValue.loadingMessage,
-                    isFullScreen = true
-                )
-            }
-            LoadingType.Custom -> {
-                CustomLoading(
-                    isLoading = loadingStateValue.isLoading,
-                    message = loadingStateValue.loadingMessage,
-                    isFullScreen = false
-                )
-            }
-            LoadingType.Default -> {
-                CustomLoading(
-                    isLoading = loadingStateValue.isLoading,
-                    message = loadingStateValue.loadingMessage,
-                    isFullScreen = false
-                )
-            }
-            LoadingType.Button -> {
-                // Button loading için de aynı loading'i göster
-                CustomLoading(
-                    isLoading = loadingStateValue.isLoading,
-                    message = loadingStateValue.loadingMessage,
-                    isFullScreen = false
-                )
-            }
-            LoadingType.None -> {
-                // Loading gösterme
-            }
-        }
-    }
-}
-
 private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
     navigation<Routes.Market>(
         startDestination = Routes.Home,
     ) {
         composable<Routes.Home> {
             val homeViewModel = hiltViewModel<HomeViewModel>()
-            
+
             HomeScreenRoute(
                 onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
                     navController.navigate(
@@ -106,25 +63,24 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
                 },
                 viewModel = homeViewModel
             )
-            
-            // HomeScreen'e geri dönüldüğünde basket verilerini yeniden yükle
+
             LaunchedEffect(Unit) {
                 homeViewModel.onResume()
             }
-            
-            // Global loading handler - HomeViewModel için
+
             GlobalLoadingHandler(homeViewModel)
         }
-        
+
         composable<Routes.Detail> {
             DetailScreenRoute(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToBasket = { navController.navigate(Routes.Basket) }
             )
         }
-        
+
         composable<Routes.Basket> {
             val basketViewModel = hiltViewModel<BasketViewModel>()
-            
+
             BasketScreenRoute(
                 onNavigateBack = { navController.popBackStack() },
                 onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
@@ -146,14 +102,57 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
                 },
                 viewModel = basketViewModel
             )
-            
-            // BasketScreen'e geçildiğinde onResume çağır
+
             LaunchedEffect(Unit) {
                 basketViewModel.onResume()
             }
-            
-            // Global loading handler - BasketViewModel için
+
             GlobalLoadingHandler(basketViewModel)
+        }
+    }
+}
+
+@Composable
+fun GlobalLoadingHandler(
+    coreViewModel: CoreViewModel
+) {
+    val context = LocalContext.current
+    val loadingState = coreViewModel.networkLoadingStateFlow.collectAsState()
+
+    loadingState.value.let { loadingStateValue ->
+        when (loadingStateValue.loadingType) {
+            LoadingType.FullScreen -> {
+                CustomLoading(
+                    isLoading = loadingStateValue.isLoading,
+                    message = loadingStateValue.loadingMessage.asString(context),
+                    isFullScreen = true
+                )
+            }
+            LoadingType.Custom -> {
+                CustomLoading(
+                    isLoading = loadingStateValue.isLoading,
+                    message = loadingStateValue.loadingMessage.asString(context),
+                    isFullScreen = false
+                )
+            }
+            LoadingType.Default -> {
+                CustomLoading(
+                    isLoading = loadingStateValue.isLoading,
+                    message = loadingStateValue.loadingMessage.asString(context),
+                    isFullScreen = false
+                )
+            }
+            LoadingType.Button -> {
+                // Button loading için de aynı loading'i göster
+                CustomLoading(
+                    isLoading = loadingStateValue.isLoading,
+                    message = loadingStateValue.loadingMessage.asString(context),
+                    isFullScreen = false
+                )
+            }
+            LoadingType.None -> {
+                // Loading gösterme
+            }
         }
     }
 }

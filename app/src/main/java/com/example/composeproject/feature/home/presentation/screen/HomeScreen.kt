@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,35 +12,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.composeproject.R
+import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketTotalBox
 import com.example.composeproject.designsysytem.components.ProductCard
-import com.example.composeproject.designsysytem.theme.BrandColor
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
-import com.example.composeproject.designsysytem.theme.Gray
-import com.example.composeproject.designsysytem.theme.TitleLarge
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.home.presentation.HomeState
-import com.example.composeproject.feature.home.presentation.HomeViewModel
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -70,7 +61,18 @@ fun HomeScreen(
                 .fillMaxSize()
                 .pullRefresh(pullRefreshState)
         ) {
-            HomeTopBar(basketTotal = state.basketTotal, onNavigateToBasket = onNavigateToBasket)
+            AppTopBar(
+                rightComponent = {
+                    BasketTotalBox(
+                        basketTotal = state.basketTotal,
+                        modifier = Modifier
+                            .width(100.dp)
+                            .height(34.dp)
+                            .clickable { onNavigateToBasket() }
+                    )
+                },
+                title = stringResource(R.string.home_products_title)
+            )
             Spacer(modifier = Modifier.height(8.dp))
             LazyRow(
                 modifier = Modifier
@@ -154,45 +156,11 @@ fun HomeScreen(
                 }
             }
         }
-
         PullRefreshIndicator(
             refreshing = isLoading,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
-    }
-}
-
-
-@Composable
-private fun HomeTopBar(basketTotal: Double, onNavigateToBasket: () -> Unit = {}) {
-    Surface(
-        color = BrandColor,
-        shadowElevation = 4.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp, bottom = 12.dp, start = 16.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(
-                text = "Ürünler",
-                color = Color.White,
-                style = TitleLarge,
-                modifier = Modifier.weight(2f),
-                textAlign = TextAlign.Center
-            )
-            BasketTotalBox(
-                basketTotal = basketTotal,
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(34.dp)
-                    .clickable { onNavigateToBasket() }
-                    .align(Alignment.CenterVertically)
-            )
-        }
     }
 }
 

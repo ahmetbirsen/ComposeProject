@@ -29,11 +29,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.composeproject.R
 import com.example.composeproject.designsysytem.theme.BrandColor
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.TitleLarge
@@ -78,40 +80,32 @@ fun CustomDialog(
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Title
                 Text(
                     text = when (dialogType) {
-                        DialogType.CLEAR_BASKET -> "Sepeti Temizle"
-                        DialogType.COMPLETE_ORDER -> "Siparişi Tamamla"
-                        DialogType.ERROR -> "Hata"
+                        DialogType.CLEAR_BASKET -> stringResource(R.string.clear_basket)
+                        DialogType.COMPLETE_ORDER -> stringResource(R.string.complete_order)
+                        DialogType.ERROR -> stringResource(R.string.error)
                     },
                     style = TitleLarge,
                     color = if (dialogType == DialogType.ERROR) Color.Red else Color.Black,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(16.dp))
-                
-                // Message
                 Text(
                     text = when (dialogType) {
-                        DialogType.CLEAR_BASKET -> "Sepetinizdeki tüm ürünleri silmek istediğinizden emin misiniz?"
-                        DialogType.COMPLETE_ORDER -> "Siparişinizi tamamlamak istediğinizden emin misiniz?"
-                        DialogType.ERROR -> errorMessage ?: "Bir hata oluştu. Lütfen tekrar deneyin."
+                        DialogType.CLEAR_BASKET -> stringResource(R.string.clear_basket_desc)
+                        DialogType.COMPLETE_ORDER -> stringResource(R.string.complete_order_desc)
+                        DialogType.ERROR -> errorMessage ?: stringResource(R.string.error_desc)
                     },
                     color = if (dialogType == DialogType.ERROR) Color.Red else Color.Gray,
                     textAlign = TextAlign.Center
                 )
-                
                 Spacer(modifier = Modifier.height(24.dp))
-                
-                // Buttons
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     if (dialogType == DialogType.ERROR) {
-                        // Error dialog için sadece OK butonu
                         Button(
                             onClick = onDismiss,
                             modifier = Modifier.fillMaxWidth(),
@@ -121,12 +115,11 @@ fun CustomDialog(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "Tamam",
+                                text = stringResource(R.string.ok),
                                 color = White
                             )
                         }
                     } else {
-                        // Cancel Button
                         Button(
                             onClick = onDismiss,
                             modifier = Modifier.weight(1f),
@@ -137,12 +130,10 @@ fun CustomDialog(
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
-                                text = "İptal",
+                                text = stringResource(R.string.cancel),
                                 color = White
                             )
                         }
-                        
-                        // Confirm Button
                         Button(
                             onClick = onConfirm,
                             modifier = Modifier.weight(1f),
@@ -161,7 +152,8 @@ fun CustomDialog(
                                         modifier = Modifier.size(16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        val infiniteTransition = rememberInfiniteTransition(label = "dialog_spinner")
+                                        val infiniteTransition =
+                                            rememberInfiniteTransition(label = stringResource(R.string.dialog_spinner_label))
                                         val rotation by infiniteTransition.animateFloat(
                                             initialValue = 0f,
                                             targetValue = 360f,
@@ -169,9 +161,9 @@ fun CustomDialog(
                                                 animation = tween(1000, easing = LinearEasing),
                                                 repeatMode = RepeatMode.Restart
                                             ),
-                                            label = "dialog_rotation"
+                                            label = stringResource(R.string.dialog_rotation_label)
                                         )
-                                        
+
                                         Box(
                                             modifier = Modifier
                                                 .size(16.dp)
@@ -183,16 +175,16 @@ fun CustomDialog(
                                         )
                                     }
                                     Text(
-                                        text = "Yükleniyor...",
+                                        text = stringResource(R.string.loading),
                                         color = White
                                     )
                                 }
                             } else {
                                 Text(
                                     text = when (dialogType) {
-                                        DialogType.CLEAR_BASKET -> "Temizle"
-                                        DialogType.COMPLETE_ORDER -> "Tamamla"
-                                        DialogType.ERROR -> "Tamam"
+                                        DialogType.CLEAR_BASKET -> stringResource(R.string.clear)
+                                        DialogType.COMPLETE_ORDER -> stringResource(R.string.yes)
+                                        DialogType.ERROR -> stringResource(R.string.ok)
                                     },
                                     color = White
                                 )
@@ -225,7 +217,8 @@ private fun ErrorDialogPreview() {
             dialogType = DialogType.ERROR,
             onDismiss = {},
             onConfirm = {},
-            errorMessage = "İnternet bağlantınızı kontrol edin"
+            errorMessage = "İnternet bağlantınızı kontrol edin",
+            isLoading = true
         )
     }
 } 

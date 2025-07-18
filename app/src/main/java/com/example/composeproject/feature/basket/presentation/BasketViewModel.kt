@@ -66,7 +66,6 @@ class BasketViewModel @Inject constructor(
     }
 
     fun onResume() {
-        // Internet bağlantısı kontrolü için network çağrısı yap
         loadSuggestedProducts()
     }
 
@@ -84,7 +83,7 @@ class BasketViewModel @Inject constructor(
         safeFlowApiCall(
             loadingType = LoadingType.Custom,
             errorType = ErrorType.Content,
-            loadingMessage = "Yükleniyor..."
+            loadingMessage = UiText.StringResource(R.string.loading)
         ) {
             getSuggestedProductsUseCase()
         }.onSuccess { response ->
@@ -105,7 +104,7 @@ class BasketViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                startButtonLoading("Yükleniyor...")
+                startButtonLoading(UiText.StringResource(R.string.loading))
                 basketUseCases.addToBasket(
                     productId,
                     productName,
@@ -126,7 +125,7 @@ class BasketViewModel @Inject constructor(
     private fun removeFromBasket(productId: String) {
         viewModelScope.launch {
             try {
-                startButtonLoading("Yükleniyor...")
+                startButtonLoading(UiText.StringResource(R.string.loading))
                 basketUseCases.removeFromBasket(productId)
                     .onEach {
                         refreshBasketData()
@@ -172,9 +171,8 @@ class BasketViewModel @Inject constructor(
     private fun completeOrder() {
         viewModelScope.launch {
             try {
-                // CoreViewModel loading state'ini başlat
-                startButtonLoading("Yükleniyor...")
-                
+                startButtonLoading(UiText.StringResource(R.string.loading))
+                delay(2000)
                 basketUseCases.clearBasket()
                 hideDialog()
                 eventChannel.trySend(BasketEvent.OrderCompleted)

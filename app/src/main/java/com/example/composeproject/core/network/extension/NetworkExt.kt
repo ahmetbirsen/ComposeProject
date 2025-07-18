@@ -3,9 +3,7 @@ package com.example.composeproject.core.network.extension
 import com.example.composeproject.core.model.RestResult
 import com.example.composeproject.core.network.Error
 import com.example.composeproject.core.network.NetworkErrorType
-import com.example.composeproject.core.network.StatusType
 import com.example.composeproject.core.network.di.JsonModule
-import com.example.composeproject.core.network.model.BaseResponse
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.MultipartBody
@@ -14,7 +12,6 @@ import okio.Buffer
 import retrofit2.Response
 
 val json = JsonModule.provideJson()
-const val ERROR_CODE = 400
 
 fun <T> parseError(response: Response<T>): RestResult.Error {
 

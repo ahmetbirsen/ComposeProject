@@ -5,18 +5,20 @@ import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.network.INetworkError
 import com.example.composeproject.core.network.NetworkState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : CoreViewModel() {
     
-    // Global error state
-    private val _errorFlow = MutableStateFlow<INetworkError?>(null)
-    val errorFlow: StateFlow<INetworkError?> = _errorFlow.asStateFlow()
+    // Global error state - Channel kullanarak tek error alıyoruz
+    private val errorChannel = Channel<INetworkError?>()
+    val errorFlow = errorChannel.receiveAsFlow()
     
     // Global network state'i dinle
     init {
@@ -24,25 +26,19 @@ class MainViewModel @Inject constructor() : CoreViewModel() {
             globalNetworkStateFlow.collect { networkState ->
                 when (networkState) {
                     is NetworkState.Error -> {
-                        _errorFlow.value = networkState.error
+                        errorChannel.send(networkState.error)
                     }
                     is NetworkState.Success -> {
                         // Success durumunda error'ı temizle
-                        _errorFlow.value = null
-                    }
-                    null -> {
-                        // Null durumunda error'ı temizle
-                        _errorFlow.value = null
+                        errorChannel.send(null)
                     }
                 }
             }
         }
     }
     
-
-    
     fun clearError() {
-        _errorFlow.value = null
+        errorChannel.trySend(null)
         clearGlobalNetworkState()
     }
 } 
