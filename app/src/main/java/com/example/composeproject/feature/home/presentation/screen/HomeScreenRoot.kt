@@ -38,7 +38,15 @@ fun HomeScreenRoute(
             when(action) {
                 is HomeAction.OnBasketBoxClick -> onBasketBoxClick()
                 is HomeAction.OnProductClick -> onProductClick(action.product)
-                else -> Unit
+                HomeAction.OnRefresh -> {
+                    // Refresh action'ı ViewModel'e ilet
+                }
+                is HomeAction.OnAddToBasket -> {
+                    // Add to basket action'ı ViewModel'e ilet
+                }
+                is HomeAction.OnRemoveFromBasket -> {
+                    // Remove from basket action'ı ViewModel'e ilet
+                }
             }
             viewModel.onAction(action)
         },

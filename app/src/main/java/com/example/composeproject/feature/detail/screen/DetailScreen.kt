@@ -30,6 +30,7 @@ import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.detail.DetailAction
 import com.example.composeproject.feature.detail.DetailState
+import com.example.composeproject.feature.home.presentation.HomeAction
 
 @Composable
 fun DetailScreen(
@@ -62,7 +63,11 @@ fun DetailScreen(
                         modifier = Modifier
                             .width(100.dp)
                             .height(34.dp)
-                            .clickable { onAction(DetailAction.OnBasketBoxClick) }
+                            .clickable {
+                                if (state.basketTotal > 0) {
+                                    onAction(DetailAction.OnBasketBoxClick)
+                                }
+                            }
                     )
                 },
                 title = stringResource(R.string.my_basket)

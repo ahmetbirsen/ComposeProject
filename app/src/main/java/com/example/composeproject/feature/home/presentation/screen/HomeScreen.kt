@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import android.util.Log
 import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketTotalBox
@@ -36,11 +37,16 @@ fun HomeScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
         onRefresh = {
+            Log.d("HomeScreen", "Pull to refresh triggered")
             onAction(HomeAction.OnRefresh)
         }
     )
 
-    Box {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(pullRefreshState)
+    ) {
         Column(modifier = Modifier.fillMaxSize()) {
             AppTopBar(
                 rightComponent = {
@@ -49,7 +55,11 @@ fun HomeScreen(
                         modifier = Modifier
                             .width(100.dp)
                             .height(34.dp)
-                            .clickable { onAction(HomeAction.OnBasketBoxClick) }
+                            .clickable {
+                                if (state.basketTotal > 0) {
+                                    onAction(HomeAction.OnBasketBoxClick)
+                                }
+                            }
                     )
                 },
                 title = stringResource(R.string.home_products_title)
@@ -99,6 +109,7 @@ fun HomeScreen(
                 }
             )
         }
+        
         PullRefreshIndicator(
             refreshing = isLoading,
             state = pullRefreshState,
