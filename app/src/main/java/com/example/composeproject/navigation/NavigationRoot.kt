@@ -7,21 +7,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import com.example.composeproject.MainViewModel
 import com.example.composeproject.core.CoreViewModel
 import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.designsysytem.components.CustomLoading
+import com.example.composeproject.feature.basket.presentation.BasketViewModel
 import com.example.composeproject.feature.basket.presentation.screen.BasketScreenRoute
 import com.example.composeproject.feature.detail.screen.DetailScreenRoute
-import com.example.composeproject.feature.home.presentation.screen.HomeScreenRoute
 import com.example.composeproject.feature.home.presentation.HomeViewModel
-import com.example.composeproject.feature.basket.presentation.BasketViewModel
-import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.composeproject.feature.home.presentation.screen.HomeScreenRoute
 
 
 @Composable
@@ -46,22 +45,19 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
             val homeViewModel = hiltViewModel<HomeViewModel>()
 
             HomeScreenRoute(
-                onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
-                    navController.navigate(
-                        Routes.Detail(
-                            productId = id,
-                            name = name,
-                            imageUrl = imageUrl,
-                            price = price,
-                            priceText = priceText,
-                            attribute = attribute
-                        )
-                    )
+                onProductClick = { product ->
+                    navController.navigate(Routes.Detail(
+                        productId = product.productId,
+                        name = product.name,
+                        attribute = product.attribute,
+                        imageUrl = product.imageUrl,
+                        price = product.price,
+                        priceText = product.priceText
+                    ))
                 },
-                onNavigateToBasket = {
+                onBasketBoxClick = {
                     navController.navigate(Routes.Basket)
                 },
-                viewModel = homeViewModel
             )
 
             LaunchedEffect(Unit) {
@@ -73,8 +69,8 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
 
         composable<Routes.Detail> {
             DetailScreenRoute(
-                onNavigateBack = { navController.navigateUp() },
-                onNavigateToBasket = { navController.navigate(Routes.Basket) }
+                onCloseClick = { navController.navigateUp() },
+                onBasketBoxClick = { navController.navigate(Routes.Basket) }
             )
         }
 
@@ -82,23 +78,23 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
             val basketViewModel = hiltViewModel<BasketViewModel>()
 
             BasketScreenRoute(
-                onNavigateBack = { navController.navigateUp() },
-                onNavigateToDetail = { id, name, attribute, imageUrl, price, priceText ->
-                    navController.navigate(
-                        Routes.Detail(
-                            productId = id,
-                            name = name,
-                            imageUrl = imageUrl,
-                            price = price,
-                            priceText = priceText,
-                            attribute = attribute
-                        )
-                    )
-                },
                 onNavigateToHome = {
                     navController.navigate(Routes.Home) {
                         popUpTo(Routes.Home) { inclusive = true }
                     }
+                },
+                onProductClick = { product ->
+                    navController.navigate(Routes.Detail(
+                        productId = product.productId,
+                        name = product.name,
+                        attribute = product.attribute,
+                        imageUrl = product.imageUrl,
+                        price = product.price,
+                        priceText = product.priceText
+                    ))
+                },
+                onCloseClick = {
+                    navController.navigateUp()
                 },
                 viewModel = basketViewModel
             )

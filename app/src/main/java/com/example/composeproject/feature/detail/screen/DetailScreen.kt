@@ -4,9 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -21,19 +23,18 @@ import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketTotalBox
 import com.example.composeproject.designsysytem.components.DetailBottomBar
-import com.example.composeproject.designsysytem.contents.DetailContent
+import com.example.composeproject.designsysytem.sections.ProductImageSection
+import com.example.composeproject.designsysytem.sections.ProductInfoSection
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
+import com.example.composeproject.feature.detail.DetailAction
 import com.example.composeproject.feature.detail.DetailState
 
 @Composable
 fun DetailScreen(
     state: DetailState,
-    onNavigateBack: () -> Unit = {},
-    onNavigateToBasket: () -> Unit = {},
-    onAddToBasket: (String, String, String, Double, String) -> Unit = { _, _, _, _, _ -> },
-    onRemoveFromBasket: (String) -> Unit = { _ -> }
+    onAction: (DetailAction) -> Unit = {},
 ) {
     Surface(color = Color.White) {
         Column(
@@ -44,7 +45,7 @@ fun DetailScreen(
                     Box(
                         modifier = Modifier
                             .size(24.dp)
-                            .clickable { onNavigateBack() },
+                            .clickable { onAction(DetailAction.OnCloseClick) },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -61,22 +62,44 @@ fun DetailScreen(
                         modifier = Modifier
                             .width(100.dp)
                             .height(34.dp)
-                            .clickable { onNavigateToBasket() }
+                            .clickable { onAction(DetailAction.OnBasketBoxClick) }
                     )
                 },
                 title = stringResource(R.string.my_basket)
             )
-            DetailContent(
-                imageUrl = state.productImageUrl,
-                productName = state.productName,
-                productAttribute = state.productAttribute,
-                priceText = state.productPriceText,
-                modifier = Modifier.weight(1f)
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                ProductImageSection(
+                    imageUrl = state.productImageUrl,
+                    contentDescription = state.productName
+                )
+                ProductInfoSection(
+                    priceText = state.productPriceText,
+                    productName = state.productName,
+                    productAttribute = state.productAttribute
+                )
+            }
             DetailBottomBar(
                 state = state,
-                onAddToBasket = onAddToBasket,
-                onRemoveFromBasket = onRemoveFromBasket
+                onAddToBasket = { productId, name, imageURL, price, priceText ->
+                    onAction(
+                        DetailAction.OnAddToBasket(
+                            productId = productId,
+                            name = name,
+                            imageURL = imageURL,
+                            price = price,
+                            priceText = priceText
+                        )
+                    )
+                },
+                onRemoveFromBasket = { id ->
+                    onAction(DetailAction.OnRemoveFromBasket(id))
+                }
             )
         }
     }

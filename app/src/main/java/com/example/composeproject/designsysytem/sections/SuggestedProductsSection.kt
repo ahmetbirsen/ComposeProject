@@ -21,6 +21,7 @@ import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel
+import com.example.composeproject.navigation.Routes
 
 @Composable
 fun SuggestedProductsSection(
@@ -28,7 +29,7 @@ fun SuggestedProductsSection(
     basketItems: List<BasketItemUiModel>,
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit
+    onProductClick: (Routes.Detail) -> Unit = { _ -> },
 ) {
     Column(
         modifier = Modifier
@@ -41,7 +42,7 @@ fun SuggestedProductsSection(
             fontSize = 18.sp,
             fontWeight = FontWeight.Bold
         )
-        
+
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,9 +56,26 @@ fun SuggestedProductsSection(
                     priceText = product.priceText,
                     imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
                     quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
-                    onAdd = { onAddToBasket(product.id, product.name, product.imageURL, product.price, product.priceText) },
+                    onAdd = {
+                        onAddToBasket(
+                            product.id,
+                            product.name,
+                            product.imageURL,
+                            product.price,
+                            product.priceText
+                        )
+                    },
                     onRemove = { onRemoveFromBasket(product.id) },
-                    onProductClick = { onNavigateToDetail(product.id, product.name, product.shortDescription, product.imageURL, product.price, product.priceText) }
+                    onProductClick = {
+                        onProductClick(Routes.Detail(
+                            productId = product.id,
+                            name = product.name,
+                            attribute = product.shortDescription,
+                            imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                            price = product.price,
+                            priceText = product.priceText
+                        ))
+                    }
                 )
             }
         }
@@ -73,7 +91,7 @@ private fun SuggestedProductsSectionEmptyPreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick =  {}
         )
     }
 }
@@ -100,7 +118,7 @@ private fun SuggestedProductsSectionSinglePreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick =  {}
         )
     }
 }
@@ -162,7 +180,7 @@ private fun SuggestedProductsSectionMultiplePreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = {}
         )
     }
 }
@@ -222,7 +240,7 @@ private fun SuggestedProductsSectionWithBasketPreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick =  {}
         )
     }
 }

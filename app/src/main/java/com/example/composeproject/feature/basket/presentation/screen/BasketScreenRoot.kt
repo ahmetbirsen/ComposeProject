@@ -11,11 +11,12 @@ import com.example.composeproject.designsysytem.components.DialogType
 import com.example.composeproject.feature.basket.presentation.BasketAction
 import com.example.composeproject.feature.basket.presentation.BasketEvent
 import com.example.composeproject.feature.basket.presentation.BasketViewModel
+import com.example.composeproject.navigation.Routes
 
 @Composable
 fun BasketScreenRoute(
-    onNavigateBack: () -> Unit = {},
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit = { _, _, _, _, _, _ -> },
+    onProductClick: (Routes.Detail) -> Unit = { _ -> },
+    onCloseClick: () -> Unit,
     onNavigateToHome: () -> Unit = {},
     viewModel: BasketViewModel = hiltViewModel()
 ) {
@@ -44,41 +45,20 @@ fun BasketScreenRoute(
                     context.getString(R.string.order_completed),
                     Toast.LENGTH_SHORT
                 ).show()
+                onNavigateToHome()
             }
         }
     }
 
     BasketScreen(
         state = state.value,
-        onNavigateBack = onNavigateBack,
-        onNavigateToDetail = onNavigateToDetail,
-        onAddToBasket = { productId, name, imageUrl, price, priceText ->
-            viewModel.handleAction(BasketAction.AddToBasket(productId, name, imageUrl, price, priceText))
-        },
-        onRemoveFromBasket = { productId ->
-            viewModel.handleAction(BasketAction.RemoveFromBasket(productId))
-        },
-        onClearBasket = {
-            viewModel.handleAction(BasketAction.ShowDialog(DialogType.CLEAR_BASKET))
-        },
-        onCompleteOrder = {
-            viewModel.handleAction(BasketAction.ShowDialog(DialogType.COMPLETE_ORDER))
-        },
-        onDismissDialog = {
-            viewModel.handleAction(BasketAction.HideDialog)
-        },
-        onConfirmDialog = {
-            when (state.value.dialogType) {
-                DialogType.CLEAR_BASKET -> viewModel.handleAction(BasketAction.ClearBasket)
-                DialogType.COMPLETE_ORDER -> {
-                    viewModel.handleAction(BasketAction.CompleteOrder)
-                    onNavigateToHome()
-                }
-                null -> {}
-                DialogType.ERROR -> {
-
-                }
+        onAction = { action ->
+            when (action) {
+                is BasketAction.OnProductClick -> onProductClick(action.product)
+                is BasketAction.OnCloseClick -> onCloseClick()
+                else -> Unit
             }
+            viewModel.onAction(action)
         },
         viewModel = viewModel
     )
