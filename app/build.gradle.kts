@@ -176,4 +176,5 @@ dependencies {
 
     // Accompanist
     implementation(libs.stack.accompanist.systemui)
+    implementation(libs.stack.accompanist.shimmer)
 }

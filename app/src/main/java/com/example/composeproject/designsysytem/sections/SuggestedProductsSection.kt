@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.ProductCard
+import com.example.composeproject.designsysytem.components.ShimmerHorizontalProductList
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
@@ -30,6 +31,7 @@ fun SuggestedProductsSection(
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
     onProductClick: (Routes.Detail) -> Unit = { _ -> },
+    isLoading: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -43,40 +45,47 @@ fun SuggestedProductsSection(
             fontWeight = FontWeight.Bold
         )
 
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            items(products, key = { it.id }) { product ->
-                ProductCard(
-                    name = product.name,
-                    attribute = product.shortDescription,
-                    priceText = product.priceText,
-                    imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                    quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
-                    onAdd = {
-                        onAddToBasket(
-                            product.id,
-                            product.name,
-                            product.imageURL,
-                            product.price,
-                            product.priceText
-                        )
-                    },
-                    onRemove = { onRemoveFromBasket(product.id) },
-                    onProductClick = {
-                        onProductClick(Routes.Detail(
-                            productId = product.id,
-                            name = product.name,
-                            attribute = product.shortDescription,
-                            imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
-                            price = product.price,
-                            priceText = product.priceText
-                        ))
-                    }
-                )
+        if (isLoading) {
+            ShimmerHorizontalProductList(
+                itemCount = 5,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+        } else {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(products, key = { it.id }) { product ->
+                    ProductCard(
+                        name = product.name,
+                        attribute = product.shortDescription,
+                        priceText = product.priceText,
+                        imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                        quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
+                        onAdd = {
+                            onAddToBasket(
+                                product.id,
+                                product.name,
+                                product.imageURL,
+                                product.price,
+                                product.priceText
+                            )
+                        },
+                        onRemove = { onRemoveFromBasket(product.id) },
+                        onProductClick = {
+                            onProductClick(Routes.Detail(
+                                productId = product.id,
+                                name = product.name,
+                                attribute = product.shortDescription,
+                                imageUrl = product.squareThumbnailURL.ifEmpty { product.imageURL },
+                                price = product.price,
+                                priceText = product.priceText
+                            ))
+                        }
+                    )
+                }
             }
         }
     }

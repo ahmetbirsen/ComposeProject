@@ -1,5 +1,12 @@
 package com.example.composeproject.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -41,7 +48,12 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
     navigation<Routes.Market>(
         startDestination = Routes.Home,
     ) {
-        composable<Routes.Home> {
+        composable<Routes.Home>(
+            enterTransition = { NavigationAnimations.homeEnterTransition() },
+            exitTransition = { NavigationAnimations.homeExitTransition() },
+            popEnterTransition = { NavigationAnimations.homePopEnterTransition() },
+            popExitTransition = { NavigationAnimations.homePopExitTransition() }
+        ) {
             val homeViewModel = hiltViewModel<HomeViewModel>()
 
             HomeScreenRoute(
@@ -67,14 +79,24 @@ private fun NavGraphBuilder.marketGraph(navController: NavHostController) {
             GlobalLoadingHandler(homeViewModel)
         }
 
-        composable<Routes.Detail> {
+        composable<Routes.Detail>(
+            enterTransition = { SharedElementTransitions.productToDetailTransition() },
+            exitTransition = { SharedElementTransitions.productToDetailExitTransition() },
+            popEnterTransition = { SharedElementTransitions.detailToProductTransition() },
+            popExitTransition = { SharedElementTransitions.detailToProductExitTransition() }
+        ) {
             DetailScreenRoute(
                 onCloseClick = { navController.navigateUp() },
                 onBasketBoxClick = { navController.navigate(Routes.Basket) }
             )
         }
 
-        composable<Routes.Basket> {
+        composable<Routes.Basket>(
+            enterTransition = { SharedElementTransitions.toBasketTransition() },
+            exitTransition = { SharedElementTransitions.fromBasketTransition() },
+            popEnterTransition = { SharedElementTransitions.toBasketTransition() },
+            popExitTransition = { SharedElementTransitions.fromBasketTransition() }
+        ) {
             val basketViewModel = hiltViewModel<BasketViewModel>()
 
             BasketScreenRoute(

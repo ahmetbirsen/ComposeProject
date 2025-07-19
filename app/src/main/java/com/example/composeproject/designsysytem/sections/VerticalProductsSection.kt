@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.composeproject.designsysytem.components.ProductCard
+import com.example.composeproject.designsysytem.components.ShimmerVerticalProductList
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
@@ -25,44 +26,54 @@ fun VerticalProductsSection(
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
     onProductClick: (Routes.Detail) -> Unit = { _ -> },
+    isLoading: Boolean = false
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = White)
-            .padding(horizontal = 8.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(7.dp)
-    ) {
-        items(products, key = { it.id }) { product ->
-            ProductCard(
-                name = product.name,
-                attribute = product.attribute,
-                priceText = product.priceText,
-                imageUrl = product.imageURL,
-                quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
-                onAdd = {
-                    onAddToBasket(
-                        product.id,
-                        product.name,
-                        product.imageURL,
-                        product.price,
-                        product.priceText
-                    )
-                },
-                onRemove = { onRemoveFromBasket(product.id) },
-                onProductClick = {
-                    onProductClick(Routes.Detail(
-                        productId = product.id,
-                        name = product.name,
-                        attribute = product.attribute,
-                        imageUrl = product.imageURL ,
-                        price = product.price,
-                        priceText = product.priceText
-                    ))
-                }
-            )
+    if (isLoading) {
+        ShimmerVerticalProductList(
+            itemCount = 9,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = White)
+        )
+    } else {
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(3),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = White)
+                .padding(horizontal = 8.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(7.dp)
+        ) {
+            items(products, key = { it.id }) { product ->
+                ProductCard(
+                    name = product.name,
+                    attribute = product.attribute,
+                    priceText = product.priceText,
+                    imageUrl = product.imageURL,
+                    quantity = basketItems.find { it.id == product.id }?.quantity ?: 0,
+                    onAdd = {
+                        onAddToBasket(
+                            product.id,
+                            product.name,
+                            product.imageURL,
+                            product.price,
+                            product.priceText
+                        )
+                    },
+                    onRemove = { onRemoveFromBasket(product.id) },
+                    onProductClick = {
+                        onProductClick(Routes.Detail(
+                            productId = product.id,
+                            name = product.name,
+                            attribute = product.attribute,
+                            imageUrl = product.imageURL ,
+                            price = product.price,
+                            priceText = product.priceText
+                        ))
+                    }
+                )
+            }
         }
     }
 }

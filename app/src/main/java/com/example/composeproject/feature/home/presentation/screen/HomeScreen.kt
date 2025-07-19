@@ -11,7 +11,12 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,7 +42,6 @@ fun HomeScreen(
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading,
         onRefresh = {
-            Log.d("HomeScreen", "Pull to refresh triggered")
             onAction(HomeAction.OnRefresh)
         }
     )
@@ -84,7 +88,8 @@ fun HomeScreen(
                 },
                 onProductClick = { product ->
                     onAction(HomeAction.OnProductClick(product))
-                }
+                },
+                isLoading = isLoading
             )
             Spacer(modifier = Modifier.height(16.dp))
             VerticalProductsSection(
@@ -106,7 +111,8 @@ fun HomeScreen(
                 },
                 onProductClick = { product ->
                     onAction(HomeAction.OnProductClick(product))
-                }
+                },
+                isLoading = isLoading
             )
         }
         

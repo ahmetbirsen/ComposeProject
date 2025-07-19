@@ -121,6 +121,7 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 # Accompanist
 stack-accompanist-systemui = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanist" }
+stack-accompanist-shimmer = { module = "com.google.accompanist:accompanist-placeholder-material", version.ref = "accompanist" }
 
 # Runtime
 androidx-runtime-android = { group = "androidx.compose.runtime", name = "runtime-android", version.ref = "runtimeAndroid" }
