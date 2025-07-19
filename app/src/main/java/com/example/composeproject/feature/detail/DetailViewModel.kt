@@ -9,14 +9,17 @@ import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
 import com.example.composeproject.feature.basket.domain.usecase.GetBasketItemsUseCase
 import com.example.composeproject.feature.basket.domain.usecase.GetBasketTotalUseCase
 import com.example.composeproject.feature.basket.domain.usecase.RemoveFromBasketUseCase
+import com.example.composeproject.feature.home.presentation.HomeEvent
 import com.example.composeproject.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -34,6 +37,8 @@ class DetailViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(DetailState())
     val uiState: StateFlow<DetailState> = _uiState.asStateFlow()
 
+    private val eventChannel = Channel<DetailEvent>()
+    val events = eventChannel.receiveAsFlow()
 
     init {
         initializeProduct(
@@ -49,14 +54,36 @@ class DetailViewModel @Inject constructor(
     fun handleAction(action: DetailAction) {
         when (action) {
             is DetailAction.AddToBasket -> {
-                addToBasket(action.productId, action.productName, action.productImageUrl, action.productPrice, action.productPriceText)
+                addToBasket(
+                    action.productId,
+                    action.productName,
+                    action.productImageUrl,
+                    action.productPrice,
+                    action.productPriceText
+                )
             }
+
             is DetailAction.RemoveFromBasket -> {
                 removeFromBasket(action.productId)
             }
+
             DetailAction.NavigateBack -> {
                 // Navigation will be handled by the UI
             }
+
+            is DetailAction.OnAddToBasket -> {
+                addToBasket(
+                    action.productId,
+                    action.name,
+                    action.imageURL,
+                    action.price,
+                    action.priceText
+                )
+            }
+            is DetailAction.OnRemoveFromBasket -> {
+                removeFromBasket(action.productId)
+            }
+            else -> Unit
         }
     }
 
@@ -76,7 +103,7 @@ class DetailViewModel @Inject constructor(
                 productPrice = productPrice,
                 productPriceText = productPriceText
             )
-            
+
             // Load basket data for this product
             loadBasketData()
         }
@@ -112,7 +139,13 @@ class DetailViewModel @Inject constructor(
             .launchIn(viewModelScope)
     }
 
-    private fun addToBasket(productId: String, name: String, imageURL: String, price: Double, priceText: String) {
+    private fun addToBasket(
+        productId: String,
+        name: String,
+        imageURL: String,
+        price: Double,
+        priceText: String
+    ) {
         basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
             .onEach {
                 // Basket işlemi tamamlandıktan sonra UI'ı güncelle
@@ -133,10 +166,10 @@ class DetailViewModel @Inject constructor(
     private suspend fun loadBasketData() {
         val basketItems = getBasketItemsUseCase.invoke().first()
         val basketTotal = getBasketTotalUseCase.invoke().first()
-        
+
         val currentProductId = _uiState.value.productId
         val currentBasketItem = basketItems.find { it.id == currentProductId }
-        
+
         _uiState.value = _uiState.value.copy(
             basketItem = currentBasketItem,
             basketTotal = basketTotal

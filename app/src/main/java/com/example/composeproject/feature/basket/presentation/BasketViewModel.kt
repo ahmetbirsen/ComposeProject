@@ -47,14 +47,14 @@ class BasketViewModel @Inject constructor(
     )
 
 
-    fun handleAction(action: BasketAction) {
+    fun onAction(action: BasketAction) {
         when (action) {
-            is BasketAction.AddToBasket -> addToBasket(
-                action.productId,
-                action.productName,
-                action.productImageUrl,
-                action.productPrice,
-                action.productPriceText
+            is BasketAction.OnAddToBasket -> addToBasket(
+                productId = action.productId,
+                productName = action.productName,
+                productImageUrl = action.productImageUrl,
+                productPrice = action.productPrice,
+                productPriceText = action.productPriceText
             )
 
             is BasketAction.RemoveFromBasket -> removeFromBasket(action.productId)
@@ -62,6 +62,7 @@ class BasketViewModel @Inject constructor(
             is BasketAction.HideDialog -> hideDialog()
             is BasketAction.ClearBasket -> clearBasket()
             is BasketAction.CompleteOrder -> completeOrder()
+            else -> Unit
         }
     }
 
@@ -116,7 +117,13 @@ class BasketViewModel @Inject constructor(
                         refreshBasketData()
                     }
                     .launchIn(viewModelScope)
-            } finally {
+            }
+            catch (e: Exception) {
+                eventChannel.trySend(BasketEvent.ShowError(
+                    UiText.StringResource(R.string.failed_add_to_basket)
+                ))
+            }
+             finally {
                 stopLoading()
             }
         }
@@ -183,7 +190,6 @@ class BasketViewModel @Inject constructor(
                     )
                 )
             } finally {
-                // CoreViewModel loading state'ini bitir
                 stopLoading()
             }
         }

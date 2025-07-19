@@ -16,6 +16,7 @@ import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.home.domain.model.VerticalProductsUiModel
+import com.example.composeproject.navigation.Routes
 
 @Composable
 fun VerticalProductsSection(
@@ -23,7 +24,7 @@ fun VerticalProductsSection(
     basketItems: List<BasketItemUiModel>,
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit
+    onProductClick: (Routes.Detail) -> Unit = { _ -> },
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -52,14 +53,14 @@ fun VerticalProductsSection(
                 },
                 onRemove = { onRemoveFromBasket(product.id) },
                 onProductClick = {
-                    onNavigateToDetail(
-                        product.id,
-                        product.name,
-                        product.attribute,
-                        product.imageURL,
-                        product.price,
-                        product.priceText
-                    )
+                    onProductClick(Routes.Detail(
+                        productId = product.id,
+                        name = product.name,
+                        attribute = product.attribute,
+                        imageUrl = product.imageURL ,
+                        price = product.price,
+                        priceText = product.priceText
+                    ))
                 }
             )
         }
@@ -75,7 +76,7 @@ private fun VerticalProductsSectionEmptyPreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = { }
         )
     }
 }
@@ -98,7 +99,7 @@ private fun VerticalProductsSectionSinglePreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = { }
         )
     }
 }
@@ -161,7 +162,7 @@ private fun VerticalProductsSectionMultiplePreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = { }
         )
     }
 }
@@ -221,7 +222,7 @@ private fun VerticalProductsSectionWithBasketPreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = {}
         )
     }
 }
@@ -265,7 +266,7 @@ private fun VerticalProductsSectionManyProductsPreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            onProductClick = {}
         )
     }
 } 

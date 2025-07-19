@@ -16,13 +16,14 @@ import com.example.composeproject.designsysytem.components.BasketItemCard
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
+import com.example.composeproject.navigation.Routes
 
 @Composable
 fun BasketItemsSection(
     basketItems: List<BasketItemUiModel>,
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
-    onNavigateToDetail: (String, String, String, String, Double, String) -> Unit
+    omProductClick: (Routes.Detail) -> Unit,
 ) {
     LazyColumn(
         modifier = Modifier
@@ -45,13 +46,15 @@ fun BasketItemsSection(
                     onRemoveFromBasket(basketItem.id)
                 },
                 onProductClick = {
-                    onNavigateToDetail(
-                        basketItem.id,
-                        basketItem.name,
-                        basketItem.imageURL,
-                        basketItem.attribute,
-                        basketItem.price,
-                        basketItem.priceText
+                    omProductClick(
+                        Routes.Detail(
+                            productId = basketItem.id,
+                            name = basketItem.name,
+                            imageUrl = basketItem.imageURL,
+                            price = basketItem.price,
+                            priceText = basketItem.priceText,
+                            attribute = basketItem.attribute
+                        )
                     )
                 }
             )
@@ -77,7 +80,7 @@ private fun BasketItemsSectionEmptyPreview() {
             basketItems = emptyList(),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            omProductClick = { }
         )
     }
 }
@@ -101,7 +104,7 @@ private fun BasketItemsSectionSinglePreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            omProductClick = { }
         )
     }
 }
@@ -145,7 +148,7 @@ private fun BasketItemsSectionMultiplePreview() {
             ),
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            omProductClick = {}
         )
     }
 }
@@ -169,7 +172,7 @@ private fun BasketItemsSectionManyPreview() {
             },
             onAddToBasket = { _, _, _, _, _ -> },
             onRemoveFromBasket = { _ -> },
-            onNavigateToDetail = { _, _, _, _, _, _ -> }
+            omProductClick = {}
         )
     }
 } 

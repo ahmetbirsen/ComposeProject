@@ -9,6 +9,7 @@ import com.example.composeproject.core.extension.onError
 import com.example.composeproject.core.extension.onSuccess
 import com.example.composeproject.core.network.ErrorType
 import com.example.composeproject.core.network.LoadingType
+import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.basket.domain.usecase.BasketUseCases
 import com.example.composeproject.feature.home.domain.usecase.HomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,7 @@ import kotlinx.coroutines.launch
 class HomeViewModel @Inject constructor(
     private val homeUseCases: HomeUseCases,
     private val basketUseCases: BasketUseCases
-    ) : CoreViewModel() {
+) : CoreViewModel() {
 
     private val eventChannel = Channel<HomeEvent>()
     val events = eventChannel.receiveAsFlow()
@@ -46,9 +47,32 @@ class HomeViewModel @Inject constructor(
         initialValue = _uiState.value
     )
 
+    fun onAction(action: HomeAction) {
+        when (action) {
+            HomeAction.OnRefresh -> {
+                refreshData()
+            }
+
+            is HomeAction.OnAddToBasket -> {
+                addToBasket(
+                    productId = action.productId,
+                    name = action.name,
+                    imageURL = action.imageURL,
+                    price = action.price,
+                    priceText = action.priceText
+                )
+            }
+
+            is HomeAction.OnRemoveFromBasket -> {
+                removeFromBasket(action.productId)
+            }
+
+            else -> Unit
+        }
+    }
+
     fun onResume() {
         refreshBasketData()
-        // Internet bağlantısı kontrolü için network çağrısı yap
         refreshData()
     }
 
@@ -66,8 +90,6 @@ class HomeViewModel @Inject constructor(
                 )
             }
             saveVerticalProductsToDatabase(response.products)
-        }.onError {
-            // Error zaten CoreViewModel tarafından handle edilecek
         }.launchIn(viewModelScope)
     }
 
@@ -84,13 +106,11 @@ class HomeViewModel @Inject constructor(
                     suggestedProducts = response.suggestedProducts
                 )
             }
-             saveSuggestedProductsToDatabase(response.suggestedProducts)
-        }.onError {
-            // Error zaten CoreViewModel tarafından handle edilecek
+            saveSuggestedProductsToDatabase(response.suggestedProducts)
         }.launchIn(viewModelScope)
     }
 
-    fun refreshData() {
+    private fun refreshData() {
         viewModelScope.launch {
             try {
                 startFullScreenLoading()
@@ -102,7 +122,13 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addToBasket(productId: String, name: String, imageURL: String, price: Double, priceText: String) {
+    private fun addToBasket(
+        productId: String,
+        name: String,
+        imageURL: String,
+        price: Double,
+        priceText: String
+    ) {
         viewModelScope.launch {
             try {
                 startButtonLoading()
@@ -118,13 +144,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun removeFromBasket(productId: String) {
+    private fun removeFromBasket(productId: String) {
         viewModelScope.launch {
             try {
                 startButtonLoading()
                 basketUseCases.removeFromBasket(productId)
                     .onEach {
-                        // Basket işlemi tamamlandıktan sonra UI'ı güncelle
                         refreshBasketData()
                     }
                     .launchIn(viewModelScope)
@@ -143,7 +168,7 @@ class HomeViewModel @Inject constructor(
                 }
             }
             .launchIn(viewModelScope)
-        
+
         basketUseCases.getBasketTotal()
             .onEach { total ->
                 _uiState.update { state ->

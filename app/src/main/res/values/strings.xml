@@ -24,4 +24,5 @@
     <string name="yes">Evet</string>
     <string name="my_basket">Sepetim</string>
     <string name="back">Geri</string>
+    <string name="failed_add_to_basket">Ürün ekleme sırasında hata oluştu.</string>
 </resources>
