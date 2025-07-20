@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.composeproject.designsysytem.theme.BrandColor
+import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.PriceText
 import com.example.composeproject.designsysytem.theme.ProductAttributeText
 import com.example.composeproject.designsysytem.theme.SmallTextSBold
@@ -43,7 +45,7 @@ fun ProductCard(
 ) {
     val isSelected = quantity > 0
     val borderColor by animateColorAsState(
-        targetValue = if (isSelected) BrandColor else Color(0xFFE0E0E0),
+        targetValue = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
         animationSpec = tween(durationMillis = 300),
         label = "BorderColorAnimation"
     )
@@ -94,19 +96,19 @@ fun ProductCard(
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = priceText,
-                color = BrandColor,
+                color = MaterialTheme.colorScheme.primary,
                 style = PriceText
             )
             Text(
                 text = name,
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = SmallTextSBold,
                 maxLines = 2,
                 modifier = Modifier.padding(top = 2.dp)
             )
             Text(
                 text = attribute,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 style = ProductAttributeText,
                 maxLines = 1,
                 modifier = Modifier.padding(top = 2.dp)
@@ -118,15 +120,17 @@ fun ProductCard(
 @Preview(showBackground = true)
 @Composable
 private fun ProductCardPreview() {
-    Column {
-        ProductCard(
-            name = "Ürün Adı",
-            attribute = "Ürün Özellikleri",
-            imageUrl = "",
-            quantity = 0,
-            onAdd = {},
-            onRemove = {},
-            priceText = "₺19.99",
-        )
+    ComposeProjectTheme {
+        Column {
+            ProductCard(
+                name = "Ürün Adı",
+                attribute = "Ürün Özellikleri",
+                imageUrl = "",
+                quantity = 0,
+                onAdd = {},
+                onRemove = {},
+                priceText = "₺19.99",
+            )
+        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,13 +84,13 @@ fun DetailBottomBar(
                     .align(Alignment.Center)
                     .padding(horizontal = 16.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = BrandColor
+                    containerColor = MaterialTheme.colorScheme.primary
                 ),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Text(
                     text = stringResource(R.string.detail_add_to_basket_button),
-                    color = White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = TitleLarge
                 )
             }

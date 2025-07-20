@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,7 +33,7 @@ fun ShimmerHorizontalProductCard(
             .width(160.dp)
             .height(200.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 4.dp
@@ -51,7 +52,7 @@ fun ShimmerHorizontalProductCard(
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.shimmer(
-                            highlightColor = ShimmerGray,
+                            highlightColor = MaterialTheme.colorScheme.outline,
                         ),
                         shape = RoundedCornerShape(8.dp)
                     )
@@ -66,7 +67,7 @@ fun ShimmerHorizontalProductCard(
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.shimmer(
-                            highlightColor = ShimmerGray,
+                            highlightColor = MaterialTheme.colorScheme.outline,
                         ),
                         shape = RoundedCornerShape(4.dp)
                     )
@@ -80,7 +81,7 @@ fun ShimmerHorizontalProductCard(
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.shimmer(
-                            highlightColor = ShimmerGray,
+                            highlightColor = MaterialTheme.colorScheme.outline,
                         ),
                         shape = RoundedCornerShape(4.dp)
                     )
@@ -93,7 +94,7 @@ fun ShimmerHorizontalProductCard(
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.shimmer(
-                            highlightColor = ShimmerGray,
+                            highlightColor = MaterialTheme.colorScheme.outline,
                         ),
                         shape = RoundedCornerShape(14.dp)
                     )

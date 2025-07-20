@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -72,12 +73,12 @@ fun CounterComponent(
             ) {
                 Column(
                     modifier = Modifier
-                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .background(MaterialTheme.colorScheme.surface, RoundedCornerShape(12.dp))
                 ) {
                     Box(
                         modifier = Modifier
                             .size(32.dp)
-                            .background(color = BrandColor),
+                            .background(color = MaterialTheme.colorScheme.primary),
                         contentAlignment = Alignment.Center
                     ) {
                         AnimatedContent(
@@ -94,7 +95,7 @@ fun CounterComponent(
                         ) { targetCount ->
                             Text(
                                 text = targetCount.toString(),
-                                color = White,
+                                color = MaterialTheme.colorScheme.onPrimary,
                                 style = CounterText
                             )
                         }
