@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +42,7 @@ fun BasketItemCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onProductClick() },
-        color = Color.White
+        color = MaterialTheme.colorScheme.surface
     ) {
         Row(
             modifier = Modifier
@@ -60,7 +61,7 @@ fun BasketItemCard(
                     .border(
                         BorderStroke(
                             width = 1.dp,
-                            color = Color.LightGray
+                            color = MaterialTheme.colorScheme.outline
                         ),
                         shape = RoundedCornerShape(16.dp)
                     )
@@ -75,7 +76,7 @@ fun BasketItemCard(
                 Text(
                     text = basketItem.name,
                     style = SmallTextSBold,
-                    color = Color.Black,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -83,13 +84,13 @@ fun BasketItemCard(
                 Text(
                     text = "Attribute", // Placeholder
                     style = ProductAttributeText,
-                    color = Color.Gray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = basketItem.priceText,
                     style = PriceText,
-                    color = BrandColor
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 

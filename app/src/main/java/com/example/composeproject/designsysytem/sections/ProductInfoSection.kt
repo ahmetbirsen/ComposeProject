@@ -3,6 +3,7 @@ package com.example.composeproject.designsysytem.sections
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,7 +24,7 @@ fun ProductInfoSection(
 ) {
     Text(
         text = priceText,
-        style = PriceText.copy(color = BrandColor),
+        style = PriceText.copy(color = MaterialTheme.colorScheme.primary),
         textAlign = TextAlign.Center,
         modifier = modifier
     )
@@ -36,7 +37,7 @@ fun ProductInfoSection(
     Spacer(modifier = Modifier.height(4.dp))
     Text(
         text = productAttribute,
-        style = TitleLarge.copy(color = Color.Gray),
+        style = TitleLarge.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
         textAlign = TextAlign.Center
     )
 }

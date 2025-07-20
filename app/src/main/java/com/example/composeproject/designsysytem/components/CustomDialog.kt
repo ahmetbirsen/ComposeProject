@@ -23,6 +23,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -72,7 +73,7 @@ fun CustomDialog(
                     }
                 ),
             shape = RoundedCornerShape(16.dp),
-            color = White
+            color = MaterialTheme.colorScheme.surface
         ) {
             Column(
                 modifier = Modifier
@@ -87,7 +88,7 @@ fun CustomDialog(
                         DialogType.ERROR -> stringResource(R.string.error)
                     },
                     style = TitleLarge,
-                    color = if (dialogType == DialogType.ERROR) Color.Red else Color.Black,
+                    color = if (dialogType == DialogType.ERROR) Color.Red else MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -97,7 +98,7 @@ fun CustomDialog(
                         DialogType.COMPLETE_ORDER -> stringResource(R.string.complete_order_desc)
                         DialogType.ERROR -> errorMessage ?: stringResource(R.string.error_desc)
                     },
-                    color = if (dialogType == DialogType.ERROR) Color.Red else Color.Gray,
+                    color = if (dialogType == DialogType.ERROR) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
@@ -116,7 +117,7 @@ fun CustomDialog(
                         ) {
                             Text(
                                 text = stringResource(R.string.ok),
-                                color = White
+                                color = MaterialTheme.colorScheme.onPrimary
                             )
                         }
                     } else {
@@ -125,13 +126,13 @@ fun CustomDialog(
                             modifier = Modifier.weight(1f),
                             enabled = !isLoading,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color.Gray
+                                containerColor = MaterialTheme.colorScheme.outline
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
                                 text = stringResource(R.string.cancel),
-                                color = White
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                         Button(
@@ -139,56 +140,14 @@ fun CustomDialog(
                             modifier = Modifier.weight(1f),
                             enabled = !isLoading,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = BrandColor
+                                containerColor = MaterialTheme.colorScheme.primary
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            if (isLoading) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        modifier = Modifier.size(16.dp),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        val infiniteTransition =
-                                            rememberInfiniteTransition(label = stringResource(R.string.dialog_spinner_label))
-                                        val rotation by infiniteTransition.animateFloat(
-                                            initialValue = 0f,
-                                            targetValue = 360f,
-                                            animationSpec = infiniteRepeatable(
-                                                animation = tween(1000, easing = LinearEasing),
-                                                repeatMode = RepeatMode.Restart
-                                            ),
-                                            label = stringResource(R.string.dialog_rotation_label)
-                                        )
-
-                                        Box(
-                                            modifier = Modifier
-                                                .size(16.dp)
-                                                .rotate(rotation)
-                                                .background(
-                                                    color = White,
-                                                    shape = CircleShape
-                                                )
-                                        )
-                                    }
-                                    Text(
-                                        text = stringResource(R.string.loading),
-                                        color = White
-                                    )
-                                }
-                            } else {
-                                Text(
-                                    text = when (dialogType) {
-                                        DialogType.CLEAR_BASKET -> stringResource(R.string.clear)
-                                        DialogType.COMPLETE_ORDER -> stringResource(R.string.yes)
-                                        DialogType.ERROR -> stringResource(R.string.ok)
-                                    },
-                                    color = White
-                                )
-                            }
+                            Text(
+                                text = stringResource(R.string.confirm),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
                     }
                 }

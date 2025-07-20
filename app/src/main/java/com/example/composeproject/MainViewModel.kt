@@ -16,11 +16,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor() : CoreViewModel() {
     
-    // Global error state - Channel kullanarak tek error alıyoruz
     private val errorChannel = Channel<INetworkError?>()
     val errorFlow = errorChannel.receiveAsFlow()
     
-    // Global network state'i dinle
     init {
         viewModelScope.launch {
             globalNetworkStateFlow.collect { networkState ->

@@ -16,6 +16,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,7 +49,7 @@ fun BasketBottomBar(
                 spotColor = Color.Black.copy(alpha = 0.1f)
             )
             .background(
-                color = White,
+                color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
@@ -61,7 +62,7 @@ fun BasketBottomBar(
                 modifier = Modifier
                     .weight(3f)
                     .background(
-                        color = BrandColor,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
                     )
                     .clickable { onCompleteOrder() }
@@ -70,7 +71,7 @@ fun BasketBottomBar(
             ) {
                 Text(
                     text = "Siparişi Tamamla",
-                    color = White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     style = TitleLarge,
                     textAlign = TextAlign.Center
                 )
@@ -81,7 +82,7 @@ fun BasketBottomBar(
                 modifier = Modifier
                     .weight(1f)
                     .background(
-                        color = White,
+                        color = MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(topEnd = 16.dp, bottomEnd = 16.dp)
                     )
                     .padding(12.dp),
@@ -94,7 +95,7 @@ fun BasketBottomBar(
                     Text(
                         text = "₺2.000,00",
                         style = PriceText.copy(
-                            color = Color.Gray,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontSize = 12.sp,
                             textDecoration = TextDecoration.LineThrough
                         ),
@@ -104,7 +105,7 @@ fun BasketBottomBar(
                     Text(
                         text = "₺%.2f".format(basketTotal),
                         style = PriceText.copy(
-                            color = BrandColor,
+                            color = MaterialTheme.colorScheme.primary,
                             fontSize = 16.sp
                         ),
                         textAlign = TextAlign.Center
