@@ -1,44 +1,39 @@
 package com.example.composeproject.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.EaseInOut
-import androidx.compose.animation.core.EaseOut
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
-import androidx.navigation.NavBackStackEntry
-import androidx.compose.ui.unit.IntOffset
 
 object NavigationAnimations {
     
     /**
      * Slide animasyonu - sağdan sola
      */
-    fun slideInFromRight() = slideInHorizontally(
+    private fun slideInFromRight() = slideInHorizontally(
         initialOffsetX = { it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeIn(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     )
     
-    fun slideOutToRight() = slideOutHorizontally(
+    private fun slideOutToRight() = slideOutHorizontally(
         targetOffsetX = { it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeOut(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
@@ -47,27 +42,27 @@ object NavigationAnimations {
     /**
      * Slide animasyonu - soldan sağa
      */
-    fun slideInFromLeft() = slideInHorizontally(
+    private fun slideInFromLeft() = slideInHorizontally(
         initialOffsetX = { -it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.NORMAL_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeIn(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.NORMAL_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     )
     
-    fun slideOutToLeft() = slideOutHorizontally(
+    private fun slideOutToLeft() = slideOutHorizontally(
         targetOffsetX = { -it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.NORMAL_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeOut(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.NORMAL_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
@@ -77,14 +72,14 @@ object NavigationAnimations {
      * Fade animasyonu
      */
     fun fadeIn() = fadeIn(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.FAST_DURATION,
             easing = AnimationConfig.FAST_EASING
         )
     )
     
     fun fadeOut() = fadeOut(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.FAST_DURATION,
             easing = AnimationConfig.FAST_EASING
         )
@@ -93,27 +88,27 @@ object NavigationAnimations {
     /**
      * Slide up animasyonu
      */
-    fun slideInFromBottom() = slideInVertically(
+    private fun slideInFromBottom() = slideInVertically(
         initialOffsetY = { it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeIn(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     )
     
-    fun slideOutToBottom() = slideOutVertically(
+    private fun slideOutToBottom() = slideOutVertically(
         targetOffsetY = { it },
-        animationSpec = tween<IntOffset>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
     ) + fadeOut(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.SLOW_DURATION,
             easing = AnimationConfig.NORMAL_EASING
         )
@@ -149,14 +144,14 @@ object NavigationAnimations {
      * Hızlı geçiş animasyonu
      */
     fun quickEnterTransition() = fadeIn(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.FAST_DURATION,
             easing = AnimationConfig.FAST_EASING
         )
     )
     
     fun quickExitTransition() = fadeOut(
-        animationSpec = tween<Float>(
+        animationSpec = tween(
             durationMillis = AnimationConfig.FAST_DURATION,
             easing = AnimationConfig.FAST_EASING
         )

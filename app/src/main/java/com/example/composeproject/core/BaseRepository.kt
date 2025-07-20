@@ -3,7 +3,6 @@ package com.example.composeproject.core
 import com.example.composeproject.core.model.RestResult
 import com.example.composeproject.core.network.NetworkErrorType
 import com.example.composeproject.core.network.extension.asRestResult
-import com.example.composeproject.core.network.model.BaseResponse
 import com.example.composeproject.core.network.Error
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

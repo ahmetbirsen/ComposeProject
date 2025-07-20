@@ -42,15 +42,6 @@ internal object RetrofitModule {
         return NoConnectionInterceptor(context)
     }
 
-//    @Provides
-//    @Interceptors
-//    @IntoMap
-//    @InterceptorMapKey(InterceptorTypes.Chucker)
-//    fun provideChuckerInterceptor(@ApplicationContext context: Context): Interceptor {
-//        return ChuckerInterceptor.Builder(context)
-//            .build()
-//    }
-
     @Provides
     @Interceptors
     @IntoMap
@@ -70,7 +61,6 @@ internal object RetrofitModule {
     @Singleton
     @Provides
     fun provideOkHttpClient(
-        //  certificatePinner: CertificatePinner,
         @Interceptors interceptors: @JvmSuppressWildcards Map<InterceptorTypes, Interceptor>,
     ): OkHttpClient {
         val okHttpClientBuilder = OkHttpClient.Builder()
@@ -78,7 +68,6 @@ internal object RetrofitModule {
             .readTimeout(TimeoutType.DEFAULT_TIMEOUT.timeout, TimeUnit.SECONDS)
             .writeTimeout(TimeoutType.DEFAULT_TIMEOUT.timeout, TimeUnit.SECONDS)
             .followSslRedirects(true)
-            //  .certificatePinner(certificatePinner)
             .apply {
                 interceptors.forEach { addInterceptor(it.value) }
             }
@@ -98,13 +87,9 @@ internal object RetrofitModule {
         val url = if (baseUrl.startsWith(https)) baseUrl else "$https$baseUrl"
 
         return if (buildType.isProd().not()) {
-            val unsafeTrustManager = createUnsafeTrustManager()
-            val sslContext = SSLContext.getInstance("TLSv1.2")
-            sslContext.init(null, arrayOf(unsafeTrustManager), null)
             Retrofit.Builder()
                 .client(
                     okHttpClient.newBuilder()
-                        .sslSocketFactory(sslContext.socketFactory, unsafeTrustManager)
                         .hostnameVerifier { _, _ -> true }
                         .build()
                 )
@@ -125,18 +110,5 @@ internal object RetrofitModule {
         return json.asConverterFactory(
             "application/json; charset=UTF-8".toMediaType()
         )
-    }
-
-    private fun createUnsafeTrustManager(): X509TrustManager {
-        return object : X509TrustManager {
-
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) =
-                Unit
-
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) =
-                Unit
-
-            override fun getAcceptedIssuers(): Array<out X509Certificate> = emptyArray()
-        }
     }
 }

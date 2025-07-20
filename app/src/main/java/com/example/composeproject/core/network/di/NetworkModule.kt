@@ -22,7 +22,6 @@ object NetworkModule {
     @Interceptors
     @IntoMap
     @InterceptorMapKey(InterceptorTypes.Header)
-    @Suppress("LongParameterList")
     fun provideHeaderInterceptor(
         @DeviceModel deviceModel: String,
         @DeviceId deviceId: String,
