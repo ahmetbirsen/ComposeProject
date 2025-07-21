@@ -107,17 +107,7 @@ plugins {
 }
 ```
 
-### Environment Configuration
 
-The app supports multiple environments through build variants:
-
-```properties
-# gradle.properties
-TEST_ENVIRONMENT=TEST
-PROD_ENVIRONMENT=PROD
-test_url=https://65c38b5339055e7482c12050.mockapi.io/api/
-prod_url=https://65c38b5339055e7482c12050.mockapi.io/api/
-```
 
 ## 🧪 Test Execution Guidelines
 
