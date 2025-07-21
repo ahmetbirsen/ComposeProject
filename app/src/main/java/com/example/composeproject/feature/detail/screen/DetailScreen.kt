@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -26,6 +31,7 @@ import com.example.composeproject.designsysytem.components.DetailBottomBar
 import com.example.composeproject.designsysytem.sections.ProductImageSection
 import com.example.composeproject.designsysytem.sections.ProductInfoSection
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
+import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.detail.DetailAction
@@ -75,7 +81,6 @@ fun DetailScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
                     .weight(1f),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
@@ -88,6 +93,22 @@ fun DetailScreen(
                     productName = state.productName,
                     productAttribute = state.productAttribute
                 )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .drawBehind {
+                            drawRect(
+                                color = Color.LightGray.copy(alpha = 0.1f),
+                                topLeft = Offset(0f, size.height),
+                                size = Size(size.width, 8f)
+                            )
+                        }
+                ) {
+                    HorizontalDivider(
+                        thickness = 1.dp
+                    )
+                }
             }
             DetailBottomBar(
                 state = state,

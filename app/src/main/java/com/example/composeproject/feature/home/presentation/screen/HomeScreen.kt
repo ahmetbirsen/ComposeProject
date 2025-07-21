@@ -23,12 +23,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.size
 import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketTotalBox
 import com.example.composeproject.designsysytem.sections.SuggestedProductsSection
 import com.example.composeproject.designsysytem.sections.VerticalProductsSection
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
+import com.example.composeproject.designsysytem.theme.Gray
 import com.example.composeproject.feature.home.presentation.HomeAction
 import com.example.composeproject.feature.home.presentation.HomeState
 
@@ -49,6 +52,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .background(color = Gray)
             .pullRefresh(pullRefreshState)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -68,7 +72,9 @@ fun HomeScreen(
                 },
                 title = stringResource(R.string.home_products_title)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier
+                .background(color = Gray)
+                .height(16.dp))
             SuggestedProductsSection(
                 products = state.suggestedProducts,
                 basketItems = state.basketItems,

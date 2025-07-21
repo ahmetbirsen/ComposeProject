@@ -6,5 +6,4 @@ interface INetworkError {
     var message: String?
     var data: JsonElement?
     var code: Int?
-    var externalCode: String?
 }

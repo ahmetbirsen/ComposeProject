@@ -38,12 +38,8 @@ import com.example.composeproject.navigation.Routes
 @Composable
 fun BasketScreen(
     state: BasketState,
-    onAction: (BasketAction) -> Unit,
-    viewModel: BasketViewModel = hiltViewModel()
+    onAction: (BasketAction) -> Unit
 ) {
-    val loadingState = viewModel.networkLoadingStateFlow.collectAsState()
-    val isButtonLoading =
-        loadingState.value.isLoading && loadingState.value.loadingType == LoadingType.Button
 
     Surface(color = Color.White) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -114,7 +110,6 @@ fun BasketScreen(
                         }
                     )
 
-                    // Suggested Products Section (if basket is not empty)
                     if (state.basketItems.isNotEmpty() && state.suggestedProducts.isNotEmpty()) {
                         Spacer(modifier = Modifier.height(16.dp))
                         SuggestedProductsSection(
@@ -170,7 +165,7 @@ fun BasketScreen(
                             }
                         }
                     },
-                    isLoading = isButtonLoading
+                    isLoading = state.isButtonLoading
                 )
             }
         }

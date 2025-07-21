@@ -9,6 +9,7 @@ data class BasketState(
     val suggestedProducts: List<SuggestedProductUiModel> = emptyList(),
     val basketTotal: Double = 0.0,
     val showDialog: Boolean = false,
-    val dialogType: DialogType? = null
+    val dialogType: DialogType? = null,
+    val isButtonLoading: Boolean = false
 )
 

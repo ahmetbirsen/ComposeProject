@@ -23,7 +23,6 @@ inline fun <reified T> Flow<RestResult<T>>.buildDefaultFlow(
                     override var message: String? = e.message
                     override var data: JsonElement? = null
                     override var code: Int? = null
-                    override var externalCode: String? = null
                 }
             )
         )

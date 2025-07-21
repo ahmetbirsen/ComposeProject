@@ -16,9 +16,6 @@ class Error : INetworkError {
     @SerialName("data")
     override var data: JsonElement? = null
 
-    @SerialName("externalCode")
-    override var externalCode: String? = null
-
     companion object {
 
         fun from(errorType: NetworkErrorType): Error {
@@ -53,14 +50,6 @@ class Error : INetworkError {
                     else -> from(exception.message ?: "Bilinmeyen hata")
                 }
             }
-        }
-
-        fun noInternetConnection(): Error {
-            return from(NetworkErrorType.NO_INTERNET_CONNECTION)
-        }
-
-        fun connectionError(): Error {
-            return from(NetworkErrorType.NO_CONNECTION)
         }
     }
 }

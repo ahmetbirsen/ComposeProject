@@ -46,6 +46,17 @@ class BasketViewModel @Inject constructor(
         initialValue = _uiState.value
     )
 
+    // Loading state'ini UI state'e yansıt
+    init {
+        networkLoadingStateFlow.onEach { loadingState ->
+            _uiState.update { state ->
+                state.copy(
+                    isButtonLoading = loadingState.isLoading && loadingState.loadingType == LoadingType.Button
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
+
 
     fun onAction(action: BasketAction) {
         when (action) {

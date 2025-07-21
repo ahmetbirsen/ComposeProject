@@ -20,6 +20,7 @@ import com.example.composeproject.designsysytem.components.ProductCard
 import com.example.composeproject.designsysytem.components.ShimmerHorizontalProductList
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
+import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.feature.home.domain.model.SuggestedProductUiModel
 import com.example.composeproject.navigation.Routes
@@ -31,20 +32,13 @@ fun SuggestedProductsSection(
     onAddToBasket: (String, String, String, Double, String) -> Unit,
     onRemoveFromBasket: (String) -> Unit,
     onProductClick: (Routes.Detail) -> Unit = { _ -> },
-    isLoading: Boolean = false
+    isLoading: Boolean = false,
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(color = Gray)
+            .background(color = White)
     ) {
-        Text(
-            text = stringResource(R.string.suggested_products),
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
-
         if (isLoading) {
             ShimmerHorizontalProductList(
                 itemCount = 5,

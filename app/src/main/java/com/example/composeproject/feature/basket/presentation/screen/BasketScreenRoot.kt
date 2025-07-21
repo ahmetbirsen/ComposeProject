@@ -31,6 +31,7 @@ fun BasketScreenRoute(
                     context.getString(R.string.basket_cleared),
                     Toast.LENGTH_SHORT
                 ).show()
+                onNavigateToHome()
             }
             is BasketEvent.ShowError -> {
                 Toast.makeText(
@@ -59,7 +60,6 @@ fun BasketScreenRoute(
                 else -> Unit
             }
             viewModel.onAction(action)
-        },
-        viewModel = viewModel
+        }
     )
 }
