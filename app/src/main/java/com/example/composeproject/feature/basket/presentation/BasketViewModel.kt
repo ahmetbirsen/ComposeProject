@@ -46,7 +46,6 @@ class BasketViewModel @Inject constructor(
         initialValue = _uiState.value
     )
 
-    // Loading state'ini UI state'e yansıt
     init {
         networkLoadingStateFlow.onEach { loadingState ->
             _uiState.update { state ->
@@ -102,8 +101,6 @@ class BasketViewModel @Inject constructor(
             _uiState.update { state ->
                 state.copy(suggestedProducts = response.suggestedProducts)
             }
-        }.onError {
-            // Error zaten CoreViewModel tarafından handle edilecek
         }.launchIn(viewModelScope)
     }
 
@@ -158,7 +155,6 @@ class BasketViewModel @Inject constructor(
     private fun clearBasket() {
         viewModelScope.launch {
             try {
-                // CoreViewModel loading state'ini başlat
                 startLoading()
                 delay(2000)
                 basketUseCases.clearBasket()
@@ -172,7 +168,6 @@ class BasketViewModel @Inject constructor(
                     )
                 )
             } finally {
-                // CoreViewModel loading state'ini bitir
                 stopLoading()
             }
         }
@@ -207,7 +202,6 @@ class BasketViewModel @Inject constructor(
     }
 
     private fun refreshBasketData() {
-        // Basket verilerini yeniden yükle
         basketUseCases.getBasketItems()
             .onEach { basketItems ->
                 _uiState.update { state ->

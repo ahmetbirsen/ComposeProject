@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,9 +17,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.composeproject.R
-import com.example.composeproject.core.network.LoadingType
 import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketBottomBar
 import com.example.composeproject.designsysytem.components.CustomDialog
@@ -31,9 +28,6 @@ import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.presentation.BasketAction
 import com.example.composeproject.feature.basket.presentation.BasketState
-import com.example.composeproject.feature.basket.presentation.BasketViewModel
-import com.example.composeproject.feature.home.presentation.HomeAction
-import com.example.composeproject.navigation.Routes
 
 @Composable
 fun BasketScreen(
@@ -88,7 +82,6 @@ fun BasketScreen(
                         .fillMaxSize()
                         .weight(1f)
                 ) {
-                    // Basket Items Section
                     BasketItemsSection(
                         basketItems = state.basketItems,
                         onAddToBasket = { productId, name, imageURL, price, priceText ->

@@ -101,12 +101,8 @@ private fun LoadingContent(message: String) {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Spinner
             Spinner()
-            
             Spacer(modifier = Modifier.height(16.dp))
-            
-            // Message
             Text(
                 text = message,
                 style = MaterialTheme.typography.bodyMedium,
@@ -136,7 +132,6 @@ private fun Spinner() {
             .rotate(rotation),
         contentAlignment = Alignment.Center
     ) {
-        // Outer circle
         Box(
             modifier = Modifier
                 .size(48.dp)
@@ -145,8 +140,6 @@ private fun Spinner() {
                     shape = CircleShape
                 )
         )
-        
-        // Inner spinning circle
         Box(
             modifier = Modifier
                 .size(32.dp)
@@ -155,8 +148,6 @@ private fun Spinner() {
                     shape = CircleShape
                 )
         )
-        
-        // Center dot
         Box(
             modifier = Modifier
                 .size(8.dp)

@@ -40,14 +40,12 @@ class BasketRepositoryImpl @Inject constructor(
         val existingItem = basketDao.getBasketItemById(productId)
         
         if (existingItem != null) {
-            // Mevcut item varsa quantity'yi artır
             val updatedItem = existingItem.copy(
                 quantity = existingItem.quantity + 1,
                 totalPrice = (existingItem.quantity + 1) * existingItem.price
             )
             basketDao.updateBasketItem(updatedItem)
         } else {
-            // Yeni ürün ekle
             val newItem = BasketItemEntity(
                 id = productId,
                 name = name,
@@ -66,14 +64,12 @@ class BasketRepositoryImpl @Inject constructor(
         
         if (existingItem != null) {
             if (existingItem.quantity > 1) {
-                // Quantity'yi azalt
                 val updatedItem = existingItem.copy(
                     quantity = existingItem.quantity - 1,
                     totalPrice = (existingItem.quantity - 1) * existingItem.price
                 )
                 basketDao.updateBasketItem(updatedItem)
             } else {
-                // Son ürünse tamamen kaldır
                 basketDao.removeBasketItem(productId)
             }
         }

@@ -50,7 +50,6 @@ fun BasketItemCard(
                 .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Product Image
             AsyncImage(
                 model = basketItem.imageURL,
                 contentDescription = basketItem.name,
@@ -66,10 +65,7 @@ fun BasketItemCard(
                         shape = RoundedCornerShape(16.dp)
                     )
             )
-
             Spacer(modifier = Modifier.width(12.dp))
-
-            // Product Info
             Column(
                 modifier = Modifier.weight(1f)
             ) {

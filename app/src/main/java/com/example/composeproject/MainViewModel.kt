@@ -27,7 +27,6 @@ class MainViewModel @Inject constructor() : CoreViewModel() {
                         errorChannel.send(networkState.error)
                     }
                     is NetworkState.Success -> {
-                        // Success durumunda error'ı temizle
                         errorChannel.send(null)
                     }
                 }

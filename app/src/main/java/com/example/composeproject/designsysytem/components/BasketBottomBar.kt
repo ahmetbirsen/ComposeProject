@@ -57,7 +57,6 @@ fun BasketBottomBar(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left Section - Complete Order Button (BrandColor background)
             Box(
                 modifier = Modifier
                     .weight(3f)
@@ -76,8 +75,6 @@ fun BasketBottomBar(
                     textAlign = TextAlign.Center
                 )
             }
-
-            // Right Section - Total Price (White background)
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -91,7 +88,6 @@ fun BasketBottomBar(
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Original price (crossed out)
                     Text(
                         text = "₺2.000,00",
                         style = PriceText.copy(
@@ -101,7 +97,6 @@ fun BasketBottomBar(
                         ),
                         textAlign = TextAlign.Center
                     )
-                    // Current total price
                     Text(
                         text = "₺%.2f".format(basketTotal),
                         style = PriceText.copy(

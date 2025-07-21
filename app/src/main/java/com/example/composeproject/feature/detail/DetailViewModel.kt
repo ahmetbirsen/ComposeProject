@@ -67,10 +67,6 @@ class DetailViewModel @Inject constructor(
                 removeFromBasket(action.productId)
             }
 
-            DetailAction.NavigateBack -> {
-                // Navigation will be handled by the UI
-            }
-
             is DetailAction.OnAddToBasket -> {
                 addToBasket(
                     action.productId,
@@ -103,23 +99,12 @@ class DetailViewModel @Inject constructor(
                 productPrice = productPrice,
                 productPriceText = productPriceText
             )
-
-            // Load basket data for this product
             loadBasketData()
         }
     }
 
-//    private fun addToBasket(productId: String, productName: String, productImageUrl: String, productPrice: Double, productPriceText: String) {
-//        viewModelScope.launch {
-//            addToBasketUseCase.invoke(productId, productName, productImageUrl, productPrice, productPriceText)
-//            loadBasketData()
-//        }
-//    }
-
     private fun refreshBasketData() {
-        // Basket verilerini yeniden yükle
         val currentProductId = _uiState.value.productId
-
         basketUseCases.getBasketItems()
             .onEach { basketItems ->
                 val currentBasketItem = basketItems.find { it.id == currentProductId }
@@ -148,7 +133,6 @@ class DetailViewModel @Inject constructor(
     ) {
         basketUseCases.addToBasket(productId, name, imageURL, price, priceText)
             .onEach {
-                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
                 refreshBasketData()
             }
             .launchIn(viewModelScope)
@@ -157,7 +141,6 @@ class DetailViewModel @Inject constructor(
     private fun removeFromBasket(productId: String) {
         basketUseCases.removeFromBasket(productId)
             .onEach {
-                // Basket işlemi tamamlandıktan sonra UI'ı güncelle
                 refreshBasketData()
             }
             .launchIn(viewModelScope)

@@ -61,7 +61,6 @@ fun ProductCard(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                // Ürün görseli veya placeholder
                 AsyncImage(
                     model = imageUrl,
                     contentDescription = name,
@@ -78,8 +77,6 @@ fun ProductCard(
                             shape = RoundedCornerShape(16.dp)
                         )
                 )
-
-                // Eski + kutusu kaldırıldı, yerine CounterComponent geldi
                 CounterComponent(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
