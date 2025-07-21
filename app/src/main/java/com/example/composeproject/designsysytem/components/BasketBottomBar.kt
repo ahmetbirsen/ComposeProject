@@ -36,11 +36,12 @@ import com.example.composeproject.designsysytem.theme.White
 
 @Composable
 fun BasketBottomBar(
+    modifier: Modifier = Modifier,
     basketTotal: Double,
     onCompleteOrder: () -> Unit
 ) {
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
             .shadow(

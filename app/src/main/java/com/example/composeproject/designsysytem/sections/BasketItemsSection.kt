@@ -1,5 +1,7 @@
 package com.example.composeproject.designsysytem.sections
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.example.composeproject.designsysytem.components.BasketItemCard
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
 import com.example.composeproject.designsysytem.theme.Gray
+import com.example.composeproject.designsysytem.theme.White
 import com.example.composeproject.feature.basket.domain.model.BasketItemUiModel
 import com.example.composeproject.navigation.Routes
 
@@ -25,12 +28,8 @@ fun BasketItemsSection(
     onRemoveFromBasket: (String) -> Unit,
     omProductClick: (Routes.Detail) -> Unit,
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-    ) {
-        items(basketItems, key = { it.id }) { basketItem ->
+    Column(modifier = Modifier.fillMaxWidth()) {
+        basketItems.forEach { basketItem ->
             BasketItemCard(
                 basketItem = basketItem,
                 onAdd = {
@@ -60,17 +59,17 @@ fun BasketItemsSection(
             )
             Spacer(modifier = Modifier.height(12.dp))
         }
-        
+
         if (basketItems.isNotEmpty()) {
-            item {
-                HorizontalDivider(
-                    modifier = Modifier.padding(vertical = 16.dp),
-                    color = Gray
-                )
-            }
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 16.dp),
+                color = Gray
+            )
         }
     }
 }
+
+
 
 @Preview(name = "Empty Basket Items")
 @Composable

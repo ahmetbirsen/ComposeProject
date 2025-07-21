@@ -24,7 +24,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import com.example.composeproject.R
 import com.example.composeproject.designsysytem.components.AppTopBar
 import com.example.composeproject.designsysytem.components.BasketTotalBox
@@ -55,71 +60,87 @@ fun HomeScreen(
             .background(color = Gray)
             .pullRefresh(pullRefreshState)
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            AppTopBar(
-                rightComponent = {
-                    BasketTotalBox(
-                        basketTotal = state.basketTotal,
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(34.dp)
-                            .clickable {
-                                if (state.basketTotal > 0) {
-                                    onAction(HomeAction.OnBasketBoxClick)
+        LazyColumn(modifier =
+            Modifier
+                .fillMaxSize()
+        ) {
+            item {
+                AppTopBar(
+                    rightComponent = {
+                        BasketTotalBox(
+                            basketTotal = state.basketTotal,
+                            modifier = Modifier
+                                .width(100.dp)
+                                .height(34.dp)
+                                .clickable {
+                                    if (state.basketTotal > 0) {
+                                        onAction(HomeAction.OnBasketBoxClick)
+                                    }
                                 }
-                            }
-                    )
-                },
-                title = stringResource(R.string.home_products_title)
-            )
-            Spacer(modifier = Modifier
-                .background(color = Gray)
-                .height(16.dp))
-            SuggestedProductsSection(
-                products = state.suggestedProducts,
-                basketItems = state.basketItems,
-                onAddToBasket = { productId, name, imageURL, price, priceText ->
-                    onAction(
-                        HomeAction.OnAddToBasket(
-                            productId = productId,
-                            name = name,
-                            imageURL = imageURL,
-                            price = price,
-                            priceText = priceText
                         )
-                    )
-                },
-                onRemoveFromBasket = { id ->
-                    onAction(HomeAction.OnRemoveFromBasket(id))
-                },
-                onProductClick = { product ->
-                    onAction(HomeAction.OnProductClick(product))
-                },
-                isLoading = isLoading
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            VerticalProductsSection(
-                products = state.verticalProducts,
-                basketItems = state.basketItems,
-                onAddToBasket = { productId, name, imageURL, price, priceText ->
-                    onAction(
-                        HomeAction.OnAddToBasket(
-                            productId = productId,
-                            name = name,
-                            imageURL = imageURL,
-                            price = price,
-                            priceText = priceText
+                    },
+                    title = stringResource(R.string.home_products_title)
+                )
+                Spacer(modifier = Modifier
+                    .background(color = Gray)
+                    .height(16.dp))
+            }
+            item {
+                SuggestedProductsSection(
+                    products = state.suggestedProducts,
+                    basketItems = state.basketItems,
+                    onAddToBasket = { productId, name, imageURL, price, priceText ->
+                        onAction(
+                            HomeAction.OnAddToBasket(
+                                productId = productId,
+                                name = name,
+                                imageURL = imageURL,
+                                price = price,
+                                priceText = priceText
+                            )
                         )
+                    },
+                    onRemoveFromBasket = { id ->
+                        onAction(HomeAction.OnRemoveFromBasket(id))
+                    },
+                    onProductClick = { product ->
+                        onAction(HomeAction.OnProductClick(product))
+                    },
+                    isLoading = isLoading
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillParentMaxHeight()
+                ) {
+                    VerticalProductsSection(
+                        products = state.verticalProducts,
+                        basketItems = state.basketItems,
+                        onAddToBasket = { productId, name, imageURL, price, priceText ->
+                            onAction(
+                                HomeAction.OnAddToBasket(
+                                    productId = productId,
+                                    name = name,
+                                    imageURL = imageURL,
+                                    price = price,
+                                    priceText = priceText
+                                )
+                            )
+                        },
+                        onRemoveFromBasket = { id ->
+                            onAction(HomeAction.OnRemoveFromBasket(id))
+                        },
+                        onProductClick = { product ->
+                            onAction(HomeAction.OnProductClick(product))
+                        },
+                        isLoading = isLoading
                     )
-                },
-                onRemoveFromBasket = { id ->
-                    onAction(HomeAction.OnRemoveFromBasket(id))
-                },
-                onProductClick = { product ->
-                    onAction(HomeAction.OnProductClick(product))
-                },
-                isLoading = isLoading
-            )
+                }
+
+            }
         }
         
         PullRefreshIndicator(

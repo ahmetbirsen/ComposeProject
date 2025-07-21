@@ -1,17 +1,24 @@
 package com.example.composeproject.feature.basket.presentation.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -25,7 +32,10 @@ import com.example.composeproject.designsysytem.components.DialogType
 import com.example.composeproject.designsysytem.sections.BasketItemsSection
 import com.example.composeproject.designsysytem.sections.SuggestedProductsSection
 import com.example.composeproject.designsysytem.theme.ComposeProjectTheme
+import com.example.composeproject.designsysytem.theme.LightGray
+import com.example.composeproject.designsysytem.theme.TitleLarge
 import com.example.composeproject.designsysytem.theme.White
+import com.example.composeproject.designsysytem.theme.XSmallTextSBold
 import com.example.composeproject.feature.basket.presentation.BasketAction
 import com.example.composeproject.feature.basket.presentation.BasketState
 
@@ -40,6 +50,8 @@ fun BasketScreen(
 
             Column(
                 modifier = Modifier.fillMaxSize()
+                    .background(color = LightGray)
+                    .verticalScroll(rememberScrollState())
             ) {
                 AppTopBar(
                     leftIcon = {
@@ -81,6 +93,7 @@ fun BasketScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1f)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     BasketItemsSection(
                         basketItems = state.basketItems,
@@ -104,7 +117,13 @@ fun BasketScreen(
                     )
 
                     if (state.basketItems.isNotEmpty() && state.suggestedProducts.isNotEmpty()) {
-                        Spacer(modifier = Modifier.height(16.dp))
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            modifier = Modifier.padding(start = 16.dp),
+                            text = stringResource(R.string.suggested_products),
+                            style = XSmallTextSBold
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
                         SuggestedProductsSection(
                             products = state.suggestedProducts,
                             basketItems = state.basketItems,
@@ -128,13 +147,25 @@ fun BasketScreen(
                         )
                     }
                 }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = White)
+                        .shadow(
+                            elevation = 1.dp,
+                            spotColor = Color.LightGray,
+                            ambientColor = Color.LightGray
+                        ),
+                ) {
+                    BasketBottomBar(
+                        modifier = Modifier,
+                        basketTotal = state.basketTotal,
+                        onCompleteOrder = {
+                            onAction(BasketAction.ShowDialog(DialogType.COMPLETE_ORDER))
+                        }
+                    )
+                }
 
-                BasketBottomBar(
-                    basketTotal = state.basketTotal,
-                    onCompleteOrder = {
-                        onAction(BasketAction.ShowDialog(DialogType.COMPLETE_ORDER))
-                    }
-                )
             }
 
             if (state.showDialog && state.dialogType != null) {
